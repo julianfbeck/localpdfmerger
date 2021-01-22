@@ -3,7 +3,7 @@ var http = require("http"),
     url = require("url"),
     path = require("path"),
     fs = require("fs")
-    port = process.argv[2] || 8080,
+    port = process.env.PORT || 8080,
     mimeTypes = {
       "html": "text/html",
       "jpeg": "image/jpeg",
@@ -15,7 +15,6 @@ var http = require("http"),
     };
  
 http.createServer(function(request, response) {
- 
   var uri = url.parse(request.url).pathname, 
       filename = path.join(process.cwd(), uri);
   
