@@ -10,7 +10,18 @@
 
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.1.1/dropzone.css">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.1.1/basic.css">
+<link rel="stylesheet" type="text/css" href="styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.1.1/dropzone.js"></script>
+<style>
+    .dropzone {
+    border: 2px dashed #0087F7;
+    border-radius: 5px;
+    background: white;
+}
+.dropzone.dz-clickable {
+    cursor: pointer;
+}
+</style>
 </head>
 <body>
 <h2>Demo of using wasm to extract first page of PDF</h2>
@@ -43,6 +54,7 @@ Output: (More in DevTools Console)
         maxFiles: 99,
         autoProcessQueue: false, // don't do real uploading (HTTP POST)
         addRemoveLinks: true,
+        parallelUploads: 200,
         // previewTemplate: document.querySelector('#preview-template').innerHTML,
         maxFilesize: Number.MAX_SAFE_INTEGER, // i.e. do not impose file size limit on DropZone, because we are not uploading any file
         accept: function(file, done) {
@@ -60,6 +72,50 @@ Output: (More in DevTools Console)
     console.log("post inst");
 
     let outtext = document.querySelector("#outtext");
+
+    async function processPDFs(file) {
+        let st = Date.now();
+        outtext.value += `Reading file ${file.name} ...\n`;
+        let reader = new FileReader();
+        async function callback(e) {
+            outtext.value += `DONE Reading file (took: ${Date.now() - st} ms)\n`;
+
+            let buffer = e.target.result.slice();
+
+            st = Date.now();
+            outtext.value += "Validating file...\n";
+            let result = await worker.validate(buffer);
+            outtext.value += `Done Validating file (took: ${Date.now() - st} ms)\n`;
+            outtext.value += `File valid: ${result} \n`;
+            if(!result) {
+                outtext.value += `====> Something wrong with the PDF file because it does not conform to the PDF spec, so this tool could not proceed to process it\n`;
+                outtext.value += `-----------\n\n`;
+                return;
+            }
+
+
+            st = Date.now();
+            outtext.value += "Extracting the first page to a separate PDF...\n";
+            // FIXME: extra copying of buffer
+            buffer = e.target.result.slice();
+            try {
+                result = await worker.extractPage(buffer, 1);
+                outtext.value += `DONE Extracting (took: ${Date.now() - st} ms)...\n`;
+                outtext.value += `-----------\n\n`;
+
+                download(new Blob([result]), 'first_page.pdf');
+            } catch(e) {
+                console.log("caught in index.html!", e);
+                outtext.value += `Error in extracting (took: ${Date.now() - st} ms)...\n`;
+                outtext.value += e + '\n';
+                outtext.value += `-----------\n\n`;
+
+            }
+        }
+        reader.onload = callback;
+        reader.readAsArrayBuffer(file);
+
+    }
 
     async function processPDF(file) {
         let st = Date.now();
