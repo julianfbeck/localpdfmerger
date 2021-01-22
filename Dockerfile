@@ -1,19 +1,18 @@
-FROM node:14
+FROM node:14-alpine
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+WORKDIR /home/node/app
+
 COPY package*.json ./
 
-RUN npm install --only=production
-# If you are building your code for production
-# RUN npm ci --only=production
+USER node
 
-# Bundle app source
+RUN npm install
+
+COPY --chown=node:node . .
 ENV PORT 80
-COPY . .
+
 EXPOSE 80
+
 CMD [ "node", "static_server.js" ]
