@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import './App.css'
+const BrowserFS = require('browserfs')
+
 class App extends Component {
   constructor (props) {
     super(props)
@@ -12,10 +14,42 @@ class App extends Component {
   }
 
   async componentDidMount () {
-    WebAssembly.instantiateStreaming(fetch("pdfcpu.wasm"),window.go.importObject).then((result) => {
-      window.go.argv = ['pdfcpu.wasm', 'trim', '-pages', '1', '/test.pdf', '/first_page.pdf'];
-            var st = Date.now();
-            window.go.run(result.instance);
+    BrowserFS.install(window)
+    
+    BrowserFS.configure(
+      {
+        fs: 'InMemory'
+      },
+      function (e) {
+        if (e) {
+          // An error happened!
+          throw e
+        }else {
+          console.log("fileSystem init")
+        }
+        // Otherwise, BrowserFS is ready-to-use!
+      }
+    )
+
+    WebAssembly.instantiateStreaming(
+      fetch('pdfcpu.wasm'),
+      window.go.importObject
+    ).then(result => {
+      // window.go.argv = [
+      //   'pdfcpu.wasm',
+      //   'trim',
+      //   '-pages',
+      //   '1',
+      //   '/test.pdf',
+      //   '/first_page.pdf'
+      // ]
+
+      window.go.argv = [
+        'pdfcpu.wasm',
+        'version',
+      ]
+
+      window.go.run(result.instance)
     })
     // WebAssembly.instantiateStreaming = async (resp, importObject) => {
     //   const source = await (await resp).arrayBuffer()
@@ -30,17 +64,7 @@ class App extends Component {
     // })
   }
 
-  handleChange = e => {
-    e.preventDefault()
-    this.setState({
-      message: e.target.value
-    })
-  }
 
-  handleSubmit = async e => {
-    e.preventDefault()
-    window.sayHelloJS(this.state.message)
-  }
 
   render () {
     return (
@@ -66,5 +90,6 @@ class App extends Component {
     )
   }
 }
+// Configures BrowserFS to use the LocalStorage file system.
 
 export default App

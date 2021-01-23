@@ -13,11 +13,33 @@
 		throw new Error("cannot export Go (neither global, window nor self is defined)");
 	}
 
+	var handler = {
+		get: function(target, property) {
+			 if(property in target && target[property] instanceof Function) {
+				 return function() {
+					 console.log(property, 'called', arguments);
+					 if (arguments[arguments.length - 1] instanceof Function) {
+						var origCB = arguments[arguments.length - 1];
+						var newCB = function() {
+							console.log('callback for', property, 'get called with args:', arguments);
+							 return Reflect.apply(origCB, arguments.callee, arguments);
+						}
+						arguments[arguments.length - 1] = newCB;
+					 }
+					 return Reflect.apply(target[property], target, arguments);
+				 }
+			 } else {
+				 return target[property]
+			 }
+		 }
+	}
+
 	// Map web browser API and Node.js API to a single common API (preferring web standards over Node.js API).
 	const isNodeJS = global.process && global.process.title === "node";
 	if (isNodeJS) {
 		global.require = require;
 		global.fs = require("fs");
+		// global.fs = new Proxy(require("fs"), handler);
 
 		const nodeCrypto = require("crypto");
 		global.crypto = {
@@ -37,10 +59,31 @@
 		global.TextEncoder = util.TextEncoder;
 		global.TextDecoder = util.TextDecoder;
 	} else {
+		var myfs = global.BrowserFS.BFSRequire('fs');
+		global.Buffer = global.BrowserFS.BFSRequire('buffer').Buffer;
+		global.fs = myfs;
+		global.fs.constants = {
+			O_RDONLY: 0,
+			O_WRONLY: 1,
+			O_RDWR: 2,
+			O_CREAT: 64,
+			O_EXCL: 128,
+			O_NOCTTY: 256,
+			O_TRUNC: 512,
+			O_APPEND: 1024,
+			O_DIRECTORY: 65536,
+			O_NOATIME: 262144,
+			O_NOFOLLOW: 131072,
+			O_SYNC: 1052672,
+			O_DIRECT: 16384,
+			O_NONBLOCK: 2048,
+		};
+
 		let outputBuf = "";
-		global.fs = {
-			constants: { O_WRONLY: -1, O_RDWR: -1, O_CREAT: -1, O_TRUNC: -1, O_APPEND: -1, O_EXCL: -1 }, // unused
-			writeSync(fd, buf) {
+
+		global.fs.writeSyncOriginal = global.fs.writeSync
+		global.fs.writeSync = function(fd, buf) {
+			if (fd === 1 || fd === 2) {
 				outputBuf += decoder.decode(buf);
 				const nl = outputBuf.lastIndexOf("\n");
 				if (nl != -1) {
@@ -48,14 +91,81 @@
 					outputBuf = outputBuf.substr(nl + 1);
 				}
 				return buf.length;
-			},
-			write(fd, buf, offset, length, position, callback) {
+			} else {
+				return global.fs.writeSyncOriginal(...arguments);
+			}
+		};
+
+		global.fs.writeOriginal = global.fs.write
+		global.fs.write = function(fd, buf, offset, length, position, callback) {
+			if (fd === 1 || fd === 2) {
 				if (offset !== 0 || length !== buf.length || position !== null) {
 					throw new Error("not implemented");
 				}
 				const n = this.writeSync(fd, buf);
-				callback(null, n);
-			},
+				callback(null, n, buf);
+			} else {
+				// buf:
+				arguments[1] = global.Buffer.from(arguments[1]);
+				return global.fs.writeOriginal(...arguments);
+			}
+		};
+
+		global.fs.openOriginal = global.fs.open
+		global.fs.open = function(path, flags, mode, callback) {
+			var myflags = 'r';
+			var O = global.fs.constants;
+
+			// Convert numeric flags to string flags
+			// FIXME: maybe wrong...
+			if (flags & O.O_WRONLY) { // 'w'
+				myflags = 'w';
+				if (flags & O.O_EXCL) {
+					myflags = 'wx';
+				} 
+			} else if (flags & O.O_RDWR) { // 'r+' or 'w+'
+				if (flags & O.O_CREAT && flags & O.O_TRUNC) { // w+
+					if (flags & O.O_EXCL) {
+						myflags = 'wx+';
+					} else {
+						myflags = 'w+';
+					}
+				} else { // r+
+					myflags = 'r+';
+				}
+			} else if (flags & O.O_APPEND) { // 'a'
+				throw new Error("Not implmented");
+			}
+			// TODO: handle other cases
+
+			return global.fs.openOriginal(path, myflags, mode, callback);
+		};
+
+		global.fs.fstatOriginal = global.fs.fstat;
+		global.fs.fstat = function(fd, callback) {
+			return global.fs.fstatOriginal(fd, function() {
+				var retStat = arguments[1];
+				delete retStat['fileData'];
+				retStat.atimeMs = retStat.atime.getTime();
+				retStat.mtimeMs = retStat.mtime.getTime();
+				retStat.ctimeMs = retStat.ctime.getTime();
+				retStat.birthtimeMs = retStat.birthtime.getTime();
+				return callback(arguments[0], retStat);
+
+			});
+		};
+
+		global.fs.closeOriginal = global.fs.close;
+		global.fs.close = function(fd, callback) {
+			return global.fs.closeOriginal(fd, function() {
+				if(typeof arguments[0] === 'undefined') arguments[0] = null;
+				return callback(...arguments);
+			});
+		}
+
+		// global.fs = new Proxy(global.fs, handler); // <- "install" the handler for proxy;
+
+		/*
 			open(path, flags, mode, callback) {
 				const err = new Error("not implemented");
 				err.code = "ENOSYS";
@@ -70,6 +180,7 @@
 				callback(null);
 			},
 		};
+		*/
 	}
 
 	const encoder = new TextEncoder("utf-8");
@@ -80,6 +191,7 @@
 			this.argv = ["js"];
 			this.env = {};
 			this.exit = (code) => {
+				this.exitCode = code;
 				if (code !== 0) {
 					console.warn("exit code:", code);
 				}

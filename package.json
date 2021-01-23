@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jufabeck2202/go-wasm-pdfmerge/issues"
   },
-  "homepage": "https://github.com/jufabeck2202/go-wasm-pdfmerge#readme"
+  "homepage": "https://github.com/jufabeck2202/go-wasm-pdfmerge#readme",
+  "dependencies": {
+    "browserfs": "^1.4.3"
+  }
 }
