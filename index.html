@@ -26,6 +26,8 @@
 <body>
 <h2>Demo of using wasm to extract first page of PDF</h2>
 <div>Note: May not work on Android</div>
+<button onclick="alert(this.files)">Click me</button>
+
 <form action=""
       class="dropzone"
       id="my-drop-zone"></form>
@@ -48,6 +50,8 @@ Output: (More in DevTools Console)
     }
     Dropzone.autoDiscover = false;
 
+    let files = []
+    
     let myDropZone = new Dropzone('#my-drop-zone', {
         url: '#',
         acceptedFiles: ".pdf",
@@ -58,11 +62,15 @@ Output: (More in DevTools Console)
         // previewTemplate: document.querySelector('#preview-template').innerHTML,
         maxFilesize: Number.MAX_SAFE_INTEGER, // i.e. do not impose file size limit on DropZone, because we are not uploading any file
         accept: function(file, done) {
+            
             console.log(file)
+            files.append(files)
             done()
             processPDF(this.getAcceptedFiles()[0])
         }
     });
+
+
 
     document.querySelector('div.dz-message span').innerText = "Drop PDF file here or click to select, only 1 file supported"
 
