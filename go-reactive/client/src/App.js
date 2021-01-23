@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
+import download from 'downloadjs'
+import { useDropzone } from 'react-dropzone'
 import './App.css'
 const BrowserFS = require('browserfs')
 
-class App extends Component {
-  constructor (props) {
-    super(props)
 
-    this.state = {
-      message: '',
-      mod: null,
-      inst: null
-    }
-  }
+function App () {
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone()
+  const files = acceptedFiles.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ))
 
-  async componentDidMount () {
+  useEffect(() => {
     BrowserFS.install(window)
-    
+
     BrowserFS.configure(
       {
         fs: 'InMemory'
@@ -24,8 +24,8 @@ class App extends Component {
         if (e) {
           // An error happened!
           throw e
-        }else {
-          console.log("fileSystem init")
+        } else {
+          console.log('fileSystem init')
         }
         // Otherwise, BrowserFS is ready-to-use!
       }
@@ -44,10 +44,7 @@ class App extends Component {
       //   '/first_page.pdf'
       // ]
 
-      window.go.argv = [
-        'pdfcpu.wasm',
-        'version',
-      ]
+      window.go.argv = ['pdfcpu.wasm', 'version']
 
       window.go.run(result.instance)
     })
@@ -62,34 +59,26 @@ class App extends Component {
     //   mod: module,
     //   inst: instance
     // })
-  }
+  }, [])
 
-
-
-  render () {
-    return (
+  return (
+    <div className='App'>
       <div className='App'>
-        <form>
-          <input
-            type='text'
-            name=''
-            id='userInput'
-            onChange={e => this.handleChange(e)}
-            style={{ marginTop: '100px' }}
-          />
-          <br />
-          <button type='submit' onClick={e => this.handleSubmit(e)}>
-            Click me to see MAGIC!!
-          </button>
-        </form>
-        <br />
-        <span id='message'>
-          Ayomide Onigbinde wrote this!!😉...💕 from WebAssembly and Golang
-        </span>
+        <section className='container'>
+          <div {...getRootProps({ className: 'dropzone' })}>
+            <input {...getInputProps()} />
+            <p>Drag 'n' drop some files here, or click to select files</p>
+          </div>
+          <aside>
+            <h4>Files</h4>
+            <ul>{files}</ul>
+          </aside>
+        </section>
       </div>
-    )
-  }
+    </div>
+  )
 }
+
 // Configures BrowserFS to use the LocalStorage file system.
 
 export default App
