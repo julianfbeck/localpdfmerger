@@ -63,7 +63,6 @@ function App () {
 
   useEffect(() => {
     BrowserFS.install(window)
-
     BrowserFS.configure(
       {
         fs: 'InMemory'
@@ -108,6 +107,18 @@ function App () {
     //   inst: instance
     // })
   }, [])
+
+  const validate = async () => {
+
+  }
+
+  const writeToBrowserFs = async (buffer) => {
+    await this.fs.writeFileAsync('/test.pdf', Buffer.from(buffer));
+    let contents = await this.fs.readFileAsync('/test.pdf');
+    console.log(contents);
+    
+  }
+
 
   return (
     <div className='App'>
