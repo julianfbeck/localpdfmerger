@@ -4,7 +4,6 @@ import { useDropzone } from 'react-dropzone'
 import './App.css'
 const BrowserFS = require('browserfs')
 
-
 const baseStyle = {
   flex: 1,
   display: 'flex',
@@ -19,42 +18,40 @@ const baseStyle = {
   color: '#bdbdbd',
   outline: 'none',
   transition: 'border .24s ease-in-out'
-};
+}
 
 const activeStyle = {
   borderColor: '#2196f3'
-};
+}
 
 const acceptStyle = {
   borderColor: '#00e676'
-};
+}
 
 const rejectStyle = {
   borderColor: '#ff1744'
-};
-
-
+}
 
 function App () {
-  const {acceptedFiles,
+  const {
+    acceptedFiles,
     getRootProps,
     getInputProps,
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({accept: 'image/*'});
+  } = useDropzone({ accept: 'image/*' })
 
-  const style = useMemo(() => ({
-    ...baseStyle,
-    ...(isDragActive ? activeStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
-  }), [
-    isDragActive,
-    isDragReject,
-    isDragAccept
-  ]);
-  
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isDragActive ? activeStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {})
+    }),
+    [isDragActive, isDragReject, isDragAccept]
+  )
+
   const files = acceptedFiles.map(file => (
     <li key={file.path}>
       {file.path} - {file.size} bytes
@@ -108,31 +105,27 @@ function App () {
     // })
   }, [])
 
-  const validate = async () => {
+  const validate = async () => {}
 
+  const writeToBrowserFs = async buffer => {
+    await this.fs.writeFileAsync('/test.pdf', Buffer.from(buffer))
+    let contents = await this.fs.readFileAsync('/test.pdf')
+    console.log(contents)
   }
-
-  const writeToBrowserFs = async (buffer) => {
-    await this.fs.writeFileAsync('/test.pdf', Buffer.from(buffer));
-    let contents = await this.fs.readFileAsync('/test.pdf');
-    console.log(contents);
-    
-  }
-
 
   return (
     <div className='App'>
-      <div className="container">
-      <div {...getRootProps({style})}>
-        <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+      <div className='container'>
+        <div {...getRootProps({ style })}>
+          <input {...getInputProps()} />
+          <p>Drag 'n' drop some files here, or click to select files</p>
+        </div>
       </div>
+      <aside>
+        <h4>Files</h4>
+        <ul>{files}</ul>
+      </aside>
     </div>
-          <aside>
-            <h4>Files</h4>
-            <ul>{files}</ul>
-          </aside>
-      </div>
   )
 }
 
