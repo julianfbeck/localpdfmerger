@@ -1,8 +1,18 @@
-import React, { Component, useEffect, useMemo } from 'react'
+import React, { Component, useEffect, useMemo,useState, useCallback } from 'react'
 import download from 'downloadjs'
 import { useDropzone } from 'react-dropzone'
 import './App.css'
+import {
+  progressBarFetch,
+  ProgressBar,
+  setOriginalFetch
+} from "react-fetch-progressbar";
+
 const BrowserFS = require('browserfs')
+
+setOriginalFetch(window.fetch);
+window.fetch = progressBarFetch;
+
 
 const baseStyle = {
   flex: 1,
@@ -33,6 +43,8 @@ const rejectStyle = {
 }
 
 function App () {
+  const [isProcessing, setIsProcessing] = useState(false)
+
   const {
     acceptedFiles,
     getRootProps,
@@ -40,7 +52,7 @@ function App () {
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({ accept: 'image/*' })
+  } = useDropzone({ accept: 'application/pdf' })
 
   const style = useMemo(
     () => ({
@@ -58,6 +70,18 @@ function App () {
     </li>
   ))
 
+  const mergeFiles = useCallback(async () => {
+    // don't send again while we are sending
+    if (isProcessing) return
+    // update state
+    setIsProcessing(true)
+    // send the actual request
+    console.log("test")
+    // once the request is sent, update state again
+    //if (isMounted.current) // only update if we are still mounted
+    setIsProcessing(false)
+  }, [isProcessing])
+
   useEffect(() => {
     BrowserFS.install(window)
     BrowserFS.configure(
@@ -69,6 +93,14 @@ function App () {
           // An error happened!
           throw e
         } else {
+          var fs = BrowserFS.BFSRequire('fs');
+          var Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+          fs.writeFile('/test.pdf', "aaaaaa", function(err) {
+            // check it is there
+            fs.readFile('/test.pdf', function(err, contents) {
+                console.log(contents);
+            });
+        });
           console.log('fileSystem init')
         }
         // Otherwise, BrowserFS is ready-to-use!
@@ -89,7 +121,6 @@ function App () {
       // ]
 
       window.go.argv = ['pdfcpu.wasm', 'version']
-
       window.go.run(result.instance)
     })
     // WebAssembly.instantiateStreaming = async (resp, importObject) => {
@@ -115,6 +146,8 @@ function App () {
 
   return (
     <div className='App'>
+          <ProgressBar style={{ marginBottom: "10px" }} />
+
       <div className='container'>
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} />
@@ -125,6 +158,7 @@ function App () {
         <h4>Files</h4>
         <ul>{files}</ul>
       </aside>
+      <input type="button" disabled={isProcessing} onClick={mergeFiles} />
     </div>
   )
 }

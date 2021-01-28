@@ -81,50 +81,6 @@ Output: (More in DevTools Console)
 
     let outtext = document.querySelector("#outtext");
 
-    async function processPDFs(file) {
-        let st = Date.now();
-        outtext.value += `Reading file ${file.name} ...\n`;
-        let reader = new FileReader();
-        async function callback(e) {
-            outtext.value += `DONE Reading file (took: ${Date.now() - st} ms)\n`;
-
-            let buffer = e.target.result.slice();
-
-            st = Date.now();
-            outtext.value += "Validating file...\n";
-            let result = await worker.validate(buffer);
-            outtext.value += `Done Validating file (took: ${Date.now() - st} ms)\n`;
-            outtext.value += `File valid: ${result} \n`;
-            if(!result) {
-                outtext.value += `====> Something wrong with the PDF file because it does not conform to the PDF spec, so this tool could not proceed to process it\n`;
-                outtext.value += `-----------\n\n`;
-                return;
-            }
-
-
-            st = Date.now();
-            outtext.value += "Extracting the first page to a separate PDF...\n";
-            // FIXME: extra copying of buffer
-            buffer = e.target.result.slice();
-            try {
-                result = await worker.extractPage(buffer, 1);
-                outtext.value += `DONE Extracting (took: ${Date.now() - st} ms)...\n`;
-                outtext.value += `-----------\n\n`;
-
-                download(new Blob([result]), 'first_page.pdf');
-            } catch(e) {
-                console.log("caught in index.html!", e);
-                outtext.value += `Error in extracting (took: ${Date.now() - st} ms)...\n`;
-                outtext.value += e + '\n';
-                outtext.value += `-----------\n\n`;
-
-            }
-        }
-        reader.onload = callback;
-        reader.readAsArrayBuffer(file);
-
-    }
-
     async function processPDF(file) {
         let st = Date.now();
         outtext.value += `Reading file ${file.name} ...\n`;
