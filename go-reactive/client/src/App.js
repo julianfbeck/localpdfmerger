@@ -50,7 +50,7 @@ let go
 
 function App () {
   const [isProcessing, setIsProcessing] = useState(false)
-  const [hasLoadedWasm, setHasLoadedWasm] = useState(false)
+  let [wasm, setWasm] = React.useState();
 
   const {
     acceptedFiles,
@@ -104,23 +104,8 @@ function App () {
           Buffer = BrowserFS.BFSRequire('buffer').Buffer
           console.log('fileSystem init')
         }
-        // Otherwise, BrowserFS is ready-to-use!
       }
     )
-    WebAssembly.instantiateStreaming(
-      fetch('pdfcpu.wasm'),
-      window.go.importObject
-    ).then(result => {
-      wasmInstance = result.instance
-      wasmModule = result.module
-      go = window.go
-
-      // window.go.argv = ['pdfcpu.wasm', 'version']
-      // window.go.run(wasmInstance)
-      // window.go.argv = ['pdfcpu.wasm', 'version']
-      // window.go.run(wasmInstance)
-      
-    })
   }, [])
 
   useEffect(() => {
@@ -147,9 +132,11 @@ function App () {
       reader.readAsArrayBuffer(file);
     })
   }
-  const test2 = async () => {
-    let contents = await fs.readFileAsync('/test.pdf')
-    console.log(contents)
+  const runWasm = async (param) => {
+    const response = await fetch('pdfcpu.wasm');
+    const {instance } = await WebAssembly.instantiateStreaming(response, window.go.importObject);
+    window.go.argv = param
+    go.run(instance)
   }
 
 
@@ -168,7 +155,7 @@ function App () {
         <ul>{files}</ul>
       </aside>
       <input type='button' disabled={isProcessing} onClick={mergeFiles} />
-      <input type='button' disabled={isProcessing} onClick={test2} />
+      <input type='button' disabled={isProcessing} onClick={alert} />
 
     </div>
   )
