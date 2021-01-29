@@ -46,7 +46,7 @@
   if (isNodeJS) {
 
   } else {
-
+    //changed to local storage so they both can comunicate
     BrowserFS.configure(
       {
         fs: 'LocalStorage'
