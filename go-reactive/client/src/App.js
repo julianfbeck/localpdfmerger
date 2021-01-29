@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useMemo,useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import download from 'downloadjs'
 import { useDropzone } from 'react-dropzone'
 import './App.css'
@@ -6,13 +6,12 @@ import {
   progressBarFetch,
   ProgressBar,
   setOriginalFetch
-} from "react-fetch-progressbar";
+} from 'react-fetch-progressbar'
 
 const BrowserFS = require('browserfs')
 
-setOriginalFetch(window.fetch);
-window.fetch = progressBarFetch;
-
+setOriginalFetch(window.fetch)
+window.fetch = progressBarFetch
 
 const baseStyle = {
   flex: 1,
@@ -41,9 +40,15 @@ const acceptStyle = {
 const rejectStyle = {
   borderColor: '#ff1744'
 }
+//global variables outside
+let browserfs
+let Buffer
+let wasmInstance
+let wasmModule
 
 function App () {
   const [isProcessing, setIsProcessing] = useState(false)
+  const [hasLoadedWasm, setHasLoadedWasm] = useState(false)
 
   const {
     acceptedFiles,
@@ -76,77 +81,68 @@ function App () {
     // update state
     setIsProcessing(true)
     // send the actual request
-    console.log("test")
+    await validate()
     // once the request is sent, update state again
     //if (isMounted.current) // only update if we are still mounted
     setIsProcessing(false)
   }, [isProcessing])
 
-  useEffect(() => {
+  const init = useCallback(async () => {
     BrowserFS.install(window)
     BrowserFS.configure(
       {
         fs: 'InMemory'
       },
-      function (e) {
+      e => {
         if (e) {
           // An error happened!
           throw e
         } else {
-          var fs = BrowserFS.BFSRequire('fs');
-          var Buffer = BrowserFS.BFSRequire('buffer').Buffer;
-          fs.writeFile('/test.pdf', "aaaaaa", function(err) {
-            // check it is there
-            fs.readFile('/test.pdf', function(err, contents) {
-                console.log(contents);
-            });
-        });
+          browserfs = BrowserFS.BFSRequire('fs')
+
+          Buffer = BrowserFS.BFSRequire('buffer').Buffer
           console.log('fileSystem init')
         }
         // Otherwise, BrowserFS is ready-to-use!
       }
     )
-
     WebAssembly.instantiateStreaming(
       fetch('pdfcpu.wasm'),
       window.go.importObject
     ).then(result => {
-      // window.go.argv = [
-      //   'pdfcpu.wasm',
-      //   'trim',
-      //   '-pages',
-      //   '1',
-      //   '/test.pdf',
-      //   '/first_page.pdf'
-      // ]
-
+      wasmInstance = result.instance
+      wasmModule = result.module
       window.go.argv = ['pdfcpu.wasm', 'version']
-      window.go.run(result.instance)
+      window.go.run(wasmInstance)
     })
-    // WebAssembly.instantiateStreaming = async (resp, importObject) => {
-    //   const source = await (await resp).arrayBuffer()
-    //   return await WebAssembly.instantiate(source, importObject)
-    // }
-    // let { instance, module } = await WebAssembly.instantiateStreaming(fetch("main.wasm"), window.go.importObject)
-    // await window.go.run(instance)
-    // // saving to state.. tsk tsk not sure its the most optimal but i guess it works?? also, the value isnt that "big" anyway
-    // this.setState({
-    //   mod: module,
-    //   inst: instance
-    // })
   }, [])
 
-  const validate = async () => {}
+  useEffect(() => {
+    init()
+  }, [init])
 
-  const writeToBrowserFs = async buffer => {
-    await this.fs.writeFileAsync('/test.pdf', Buffer.from(buffer))
-    let contents = await this.fs.readFileAsync('/test.pdf')
+  const writeFile = async (e) => {
+    //todo change to await
+    console.log(e)
+    let data = e.target.result.slice();
+    await browserfs.writeFileSync('/test.pdf', Buffer.from(data))
+    let contents = await browserfs.readFileSync('/test.pdf')
     console.log(contents)
   }
 
+  const validate = async () => {
+    acceptedFiles.map(async file => {
+      console.log(file)
+      let reader = new FileReader();
+      reader.onload = writeFile;
+      reader.readAsArrayBuffer(file);
+    })
+  }
+
+
   return (
     <div className='App'>
-          <ProgressBar style={{ marginBottom: "10px" }} />
+      <ProgressBar style={{ marginBottom: '10px' }} />
 
       <div className='container'>
         <div {...getRootProps({ style })}>
@@ -158,7 +154,7 @@ function App () {
         <h4>Files</h4>
         <ul>{files}</ul>
       </aside>
-      <input type="button" disabled={isProcessing} onClick={mergeFiles} />
+      <input type='button' disabled={isProcessing} onClick={mergeFiles} />
     </div>
   )
 }
@@ -166,3 +162,15 @@ function App () {
 // Configures BrowserFS to use the LocalStorage file system.
 
 export default App
+
+// WebAssembly.instantiateStreaming = async (resp, importObject) => {
+//   const source = await (await resp).arrayBuffer()
+//   return await WebAssembly.instantiate(source, importObject)
+// }
+// let { instance, module } = await WebAssembly.instantiateStreaming(fetch("main.wasm"), window.go.importObject)
+// await window.go.run(instance)
+// // saving to state.. tsk tsk not sure its the most optimal but i guess it works?? also, the value isnt that "big" anyway
+// this.setState({
+//   mod: module,
+//   inst: instance
+// })
