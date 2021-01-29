@@ -50,7 +50,7 @@ let go
 
 function App () {
   const [isProcessing, setIsProcessing] = useState(false)
-  let [wasm, setWasm] = React.useState();
+  let [oldFiles, setOldFiles] = React.useState();
 
   const {
     acceptedFiles,
@@ -89,13 +89,22 @@ function App () {
     setIsProcessing(false)
   }, [isProcessing])
 
+
+  const getAllFiles = async () => {
+    fs.readdir("/", (err, files) => {
+      if (files === undefined) {
+        setOldFiles(files)
+      }
+    });
+  }
+
   const init = useCallback(async () => {
     BrowserFS.install(window)
     BrowserFS.configure(
       {
         fs: 'LocalStorage'
       },
-      e => {
+      async e => {
         if (e) {
           // An error happened!
           throw e
@@ -103,10 +112,13 @@ function App () {
           fs = Promise.promisifyAll(BrowserFS.BFSRequire('fs'));
           Buffer = BrowserFS.BFSRequire('buffer').Buffer
           console.log('fileSystem init')
+          await getAllFiles()
+          
         }
       }
     )
   }, [])
+
 
   useEffect(() => {
     init()
