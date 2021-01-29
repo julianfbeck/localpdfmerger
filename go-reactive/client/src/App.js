@@ -7,6 +7,7 @@ import {
   ProgressBar,
   setOriginalFetch
 } from 'react-fetch-progressbar'
+import { Promise } from "bluebird";
 
 const BrowserFS = require('browserfs')
 
@@ -41,10 +42,11 @@ const rejectStyle = {
   borderColor: '#ff1744'
 }
 //global variables outside
-let browserfs
+let fs
 let Buffer
 let wasmInstance
 let wasmModule
+let go
 
 function App () {
   const [isProcessing, setIsProcessing] = useState(false)
@@ -91,15 +93,14 @@ function App () {
     BrowserFS.install(window)
     BrowserFS.configure(
       {
-        fs: 'InMemory'
+        fs: 'LocalStorage'
       },
       e => {
         if (e) {
           // An error happened!
           throw e
         } else {
-          browserfs = BrowserFS.BFSRequire('fs')
-
+          fs = Promise.promisifyAll(BrowserFS.BFSRequire('fs'));
           Buffer = BrowserFS.BFSRequire('buffer').Buffer
           console.log('fileSystem init')
         }
@@ -112,8 +113,13 @@ function App () {
     ).then(result => {
       wasmInstance = result.instance
       wasmModule = result.module
-      window.go.argv = ['pdfcpu.wasm', 'version']
-      window.go.run(wasmInstance)
+      go = window.go
+
+      // window.go.argv = ['pdfcpu.wasm', 'version']
+      // window.go.run(wasmInstance)
+      // window.go.argv = ['pdfcpu.wasm', 'version']
+      // window.go.run(wasmInstance)
+      
     })
   }, [])
 
@@ -125,18 +131,25 @@ function App () {
     //todo change to await
     console.log(e)
     let data = e.target.result.slice();
-    await browserfs.writeFileSync('/test.pdf', Buffer.from(data))
-    let contents = await browserfs.readFileSync('/test.pdf')
+    await fs.writeFileAsync('/test.pdf', Buffer.from(data))
+    let contents = await fs.readFileAsync('/test.pdf')
     console.log(contents)
+    go.argv = ['pdfcpu.wasm', 'validate' ,'./test.pdf']
+    go.run(wasmInstance)
   }
 
   const validate = async () => {
+    console.log("saving to disk")
     acceptedFiles.map(async file => {
       console.log(file)
       let reader = new FileReader();
       reader.onload = writeFile;
       reader.readAsArrayBuffer(file);
     })
+  }
+  const test2 = async () => {
+    let contents = await fs.readFileAsync('/test.pdf')
+    console.log(contents)
   }
 
 
@@ -155,6 +168,8 @@ function App () {
         <ul>{files}</ul>
       </aside>
       <input type='button' disabled={isProcessing} onClick={mergeFiles} />
+      <input type='button' disabled={isProcessing} onClick={test2} />
+
     </div>
   )
 }
