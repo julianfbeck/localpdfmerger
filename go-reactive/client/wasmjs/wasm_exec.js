@@ -47,6 +47,7 @@
 
   } else {
     //changed to local storage so they both can comunicate
+    //todo move 
     BrowserFS.configure(
       {
         fs: 'LocalStorage'

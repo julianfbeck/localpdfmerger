@@ -7,7 +7,7 @@ import {
   ProgressBar,
   setOriginalFetch
 } from 'react-fetch-progressbar'
-import { Promise } from "bluebird";
+import { Promise } from 'bluebird'
 
 const BrowserFS = require('browserfs')
 
@@ -44,22 +44,22 @@ const rejectStyle = {
 //global variables outside
 let fs
 let Buffer
-let wasmInstance
-let wasmModule
-let go
+
 
 function App () {
-  const [isProcessing, setIsProcessing] = useState(false)
-  let [oldFiles, setOldFiles] = React.useState();
+  let [oldFiles, setOldFiles] = React.useState()
+  const [files, setFiles] = React.useState([])
+  const onDrop = React.useCallback(acceptedFiles => {
+    setFiles(prev => [...prev, ...acceptedFiles])
+  }, [])
 
   const {
-    acceptedFiles,
     getRootProps,
     getInputProps,
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({ accept: 'application/pdf' })
+  } = useDropzone({ onDrop, accept: 'application/pdf' })
 
   const style = useMemo(
     () => ({
@@ -71,31 +71,20 @@ function App () {
     [isDragActive, isDragReject, isDragAccept]
   )
 
-  const files = acceptedFiles.map(file => (
+  const fileList = files.map(file => (
     <li key={file.path}>
       {file.path} - {file.size} bytes
     </li>
   ))
 
-  const mergeFiles = useCallback(async () => {
-    // don't send again while we are sending
-    if (isProcessing) return
-    // update state
-    setIsProcessing(true)
-    // send the actual request
-    await validate()
-    // once the request is sent, update state again
-    //if (isMounted.current) // only update if we are still mounted
-    setIsProcessing(false)
-  }, [isProcessing])
-
-
   const getAllFiles = async () => {
-    fs.readdir("/", (err, files) => {
+    fs.readdir('/', (err, files) => {
+      console.log("hi")
       if (files === undefined) {
         setOldFiles(files)
+        console.log(files)
       }
-    });
+    })
   }
 
   const init = useCallback(async () => {
@@ -109,48 +98,47 @@ function App () {
           // An error happened!
           throw e
         } else {
-          fs = Promise.promisifyAll(BrowserFS.BFSRequire('fs'));
+          fs = Promise.promisifyAll(BrowserFS.BFSRequire('fs'))
           Buffer = BrowserFS.BFSRequire('buffer').Buffer
           console.log('fileSystem init')
           await getAllFiles()
-          
         }
       }
     )
   }, [])
 
-
   useEffect(() => {
     init()
   }, [init])
 
-  const writeFile = async (e) => {
+  const writeFile = async e => {
     //todo change to await
-    console.log(e)
-    let data = e.target.result.slice();
-    await fs.writeFileAsync('/test.pdf', Buffer.from(data))
-    let contents = await fs.readFileAsync('/test.pdf')
-    console.log(contents)
-    go.argv = ['pdfcpu.wasm', 'validate' ,'./test.pdf']
-    go.run(wasmInstance)
+    console.log(e.target.fileName)
+    let data = e.target.result.slice()
+    await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
+    await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
+    console.log(global.fs)
   }
 
   const validate = async () => {
-    console.log("saving to disk")
-    acceptedFiles.map(async file => {
-      console.log(file)
-      let reader = new FileReader();
-      reader.onload = writeFile;
-      reader.readAsArrayBuffer(file);
+    console.log('saving to disk')
+    files.map(async file => {
+      let reader = new FileReader()
+      reader.fileName = file.name 
+      reader.onload = writeFile
+      reader.readAsArrayBuffer(file)
+      console.log(`Writing ${file.name} to disk`)
     })
   }
-  const runWasm = async (param) => {
-    const response = await fetch('pdfcpu.wasm');
-    const {instance } = await WebAssembly.instantiateStreaming(response, window.go.importObject);
+  const runWasm = async param => {
+    const response = await fetch('pdfcpu.wasm')
+    const { instance } = await WebAssembly.instantiateStreaming(
+      response,
+      window.go.importObject
+    )
     window.go.argv = param
-    go.run(instance)
+    await window.go.run(instance)
   }
-
 
   return (
     <div className='App'>
@@ -164,11 +152,10 @@ function App () {
       </div>
       <aside>
         <h4>Files</h4>
-        <ul>{files}</ul>
+        <ul>{fileList}</ul>
       </aside>
-      <input type='button' disabled={isProcessing} onClick={mergeFiles} />
-      <input type='button' disabled={isProcessing} onClick={alert} />
-
+      <input type='button' onClick={validate} />
+      <input type='button' onClick={alert} />
     </div>
   )
 }
