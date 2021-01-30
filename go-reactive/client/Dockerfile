@@ -7,7 +7,7 @@ COPY yarn.lock ./
 RUN yarn install 
 RUN yarn global add  --ignore-optional react-scripts 
 COPY . ./
-RUN yarn build
+RUN node scripts/build.js
 
 # production environment
 FROM nginx:stable-alpine
