@@ -77,37 +77,11 @@ function App () {
     </li>
   ))
 
-  const getAllFiles = async () => {
-    fs.readdir('/', (err, files) => {
-      console.log("hi")
-      if (files === undefined) {
-        setOldFiles(files)
-        console.log(files)
-      }
-    })
-  }
+
 
   const init = useCallback(async () => {
-    BrowserFS.install(window)
-    BrowserFS.configure(
-      {
-        fs: 'LocalStorage'
-      },
-      async e => {
-        if (e) {
-          // An error happened!
-          throw e
-        } else {
-          fs = Promise.promisifyAll(BrowserFS.BFSRequire('fs'))
-
-          Buffer = BrowserFS.BFSRequire('buffer').Buffer
-          //global.fs = fs
-          //global.Buffer = Buffer
-          console.log('fileSystem init')
-          await getAllFiles()
-        }
-      }
-    )
+    fs = global.fs
+    Buffer = global.Buffer
   }, [])
 
   useEffect(() => {
@@ -119,8 +93,16 @@ function App () {
     console.log(e.target.fileName)
     let data = e.target.result.slice()
     await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
+    console.log(await fs.readFileAsync(`/${e.target.fileName}`))
     await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
+    await runWasm(['pdfcpu.wasm', 'merge', "/test.pdf", `/${e.target.fileName}`,`/${e.target.fileName}`])
     console.log(global.fs)
+    await downloadFile(`/test.pdf`)
+  }
+
+  const downloadFile = async file => {
+    let data = await fs.readFileAsync(file)
+    download(new Blob([data]), file)
   }
 
   const validate = async () => {
@@ -167,14 +149,3 @@ function App () {
 
 export default App
 
-// WebAssembly.instantiateStreaming = async (resp, importObject) => {
-//   const source = await (await resp).arrayBuffer()
-//   return await WebAssembly.instantiate(source, importObject)
-// }
-// let { instance, module } = await WebAssembly.instantiateStreaming(fetch("main.wasm"), window.go.importObject)
-// await window.go.run(instance)
-// // saving to state.. tsk tsk not sure its the most optimal but i guess it works?? also, the value isnt that "big" anyway
-// this.setState({
-//   mod: module,
-//   inst: instance
-// })
