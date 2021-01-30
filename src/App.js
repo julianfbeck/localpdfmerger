@@ -122,8 +122,9 @@ function App () {
   }
   const runWasm = async param => {
     const response = await fetch('pdfcpu.wasm')
-    const { instance } = await WebAssembly.instantiateStreaming(
-      response,
+    const buffer = await response.arrayBuffer();
+    const { instance } = await WebAssembly.instantiate(
+      buffer,
       window.go.importObject
     )
     window.go.argv = param
