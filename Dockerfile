@@ -6,7 +6,6 @@ COPY package.json ./
 COPY yarn.lock ./
 RUN yarn install 
 RUN yarn global add  --ignore-optional react-scripts 
-COPY scripts/ ./
 COPY . ./
 RUN node scripts/build.js
 
