@@ -99,7 +99,10 @@ function App () {
           throw e
         } else {
           fs = Promise.promisifyAll(BrowserFS.BFSRequire('fs'))
+
           Buffer = BrowserFS.BFSRequire('buffer').Buffer
+          //global.fs = fs
+          //global.Buffer = Buffer
           console.log('fileSystem init')
           await getAllFiles()
         }
