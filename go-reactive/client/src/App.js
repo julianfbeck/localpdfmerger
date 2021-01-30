@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import { ChakraProvider } from '@chakra-ui/react'
 import download from 'downloadjs'
 import { useDropzone } from 'react-dropzone'
 import './App.css'
@@ -45,7 +46,6 @@ const rejectStyle = {
 let fs
 let Buffer
 
-
 function App () {
   let [oldFiles, setOldFiles] = React.useState()
   const [files, setFiles] = React.useState([])
@@ -77,8 +77,6 @@ function App () {
     </li>
   ))
 
-
-
   const init = useCallback(async () => {
     fs = global.fs
     Buffer = global.Buffer
@@ -95,7 +93,13 @@ function App () {
     await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
     console.log(await fs.readFileAsync(`/${e.target.fileName}`))
     await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
-    await runWasm(['pdfcpu.wasm', 'merge', "/test.pdf", `/${e.target.fileName}`,`/${e.target.fileName}`])
+    await runWasm([
+      'pdfcpu.wasm',
+      'merge',
+      '/test.pdf',
+      `/${e.target.fileName}`,
+      `/${e.target.fileName}`
+    ])
     console.log(global.fs)
     await downloadFile(`/test.pdf`)
   }
@@ -109,7 +113,7 @@ function App () {
     console.log('saving to disk')
     files.map(async file => {
       let reader = new FileReader()
-      reader.fileName = file.name 
+      reader.fileName = file.name
       reader.onload = writeFile
       reader.readAsArrayBuffer(file)
       console.log(`Writing ${file.name} to disk`)
@@ -126,26 +130,27 @@ function App () {
   }
 
   return (
-    <div className='App'>
-      <ProgressBar style={{ marginBottom: '10px' }} />
+    <ChakraProvider>
+      <div className='App'>
+        <ProgressBar style={{ marginBottom: '10px' }} />
 
-      <div className='container'>
-        <div {...getRootProps({ style })}>
-          <input {...getInputProps()} />
-          <p>Drag 'n' drop some files here, or click to select files</p>
+        <div className='container'>
+          <div {...getRootProps({ style })}>
+            <input {...getInputProps()} />
+            <p>Drag 'n' drop some files here, or click to select files</p>
+          </div>
         </div>
+        <aside>
+          <h4>Files</h4>
+          <ul>{fileList}</ul>
+        </aside>
+        <input type='button' onClick={validate} />
+        <input type='button' onClick={alert} />
       </div>
-      <aside>
-        <h4>Files</h4>
-        <ul>{fileList}</ul>
-      </aside>
-      <input type='button' onClick={validate} />
-      <input type='button' onClick={alert} />
-    </div>
+    </ChakraProvider>
   )
 }
 
 // Configures BrowserFS to use the LocalStorage file system.
 
 export default App
-

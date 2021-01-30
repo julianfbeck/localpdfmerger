@@ -1,4 +1,4 @@
  {
   "schemaVersion": 2,
-  "dockerfilePath": "./Dockerfile"
+  "dockerfilePath": "./go-reactive/client/Dockerfile"
  }
