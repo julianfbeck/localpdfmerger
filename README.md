@@ -1,21 +1,68 @@
-## Running a command line tool written in Go on browser with WebAssembly
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This repo contains code/assets from the [article](article.md)
+## Available Scripts
 
-Files:
-```
-.
-├── article.md           ---  Article explaining the code
-├── index.html           ---  Demo UI page
-├── worker.js            ---  JS code for Demo UI Page
-├── oldindex.html        ---  Code from the article
-├── pdfcpu               ---  Linux x86_64 native binary
-├── pdfcpu.wasm          ---  Compiled wasm module of pdfcpu
-├── pdfcpu.wasm.br       ---  Brotli compression output
-├── pdfcpu.wasm.gz       ---  Gzip compression output
-├── README.md            ---  This file
-├── static_server.js     ---  A simple HTTP static file server in Node.js, with wasm MIME type support for development
-├── wasm_exec.js.orig    ---  Original wasm_exec.js from Go v1.12.4 installation (misc/wasm), for diff'ing changes
-└── wasm_exec.js         ---  Modified to add Filesystem emulation support in browser with BrowserFS
-```
+In the project directory, you can run:
 
+### `npm start`
+
+Runs the app in the development mode.<br>
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+The page will reload if you make edits.<br>
+You will also see any lint errors in the console.
+
+### `npm test`
+
+Launches the test runner in the interactive watch mode.<br>
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.<br>
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.<br>
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+
+### Analyzing the Bundle Size
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+
+### Making a Progressive Web App
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+
+### Advanced Configuration
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+
+### Deployment
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+
+### `npm run build` fails to minify
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify

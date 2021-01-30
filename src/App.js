@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
-import { ChakraProvider } from '@chakra-ui/react'
+
+import { ChakraProvider, Button, ButtonGroup } from '@chakra-ui/react'
 import download from 'downloadjs'
 import { useDropzone } from 'react-dropzone'
 import './App.css'
@@ -144,8 +145,8 @@ function App () {
           <h4>Files</h4>
           <ul>{fileList}</ul>
         </aside>
-        <input type='button' onClick={validate} />
-        <input type='button' onClick={alert} />
+        <Button colorScheme="blue"  onClick={validate} >Merge</Button>
+
       </div>
     </ChakraProvider>
   )

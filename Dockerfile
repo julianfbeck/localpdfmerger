@@ -1,18 +1,17 @@
-FROM node:14-alpine
-
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
-
-WORKDIR /home/node/app
-
+# build environment
+FROM node:15.7.0-alpine3.10 as build
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
+COPY yarn.lock ./
+RUN yarn install 
+RUN yarn global add  --ignore-optional react-scripts 
+COPY scripts/ ./
+COPY . ./
+RUN node scripts/build.js
 
-USER node
-
-RUN npm install
-
-COPY --chown=node:node . .
-ENV PORT 80
-
+# production environment
+FROM nginx:stable-alpine
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
-
-CMD [ "node", "static_server.js" ]
+CMD ["nginx", "-g", "daemon off;"]
