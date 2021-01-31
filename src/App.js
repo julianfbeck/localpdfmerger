@@ -9,7 +9,6 @@ import {
   ProgressBar,
   setOriginalFetch
 } from 'react-fetch-progressbar'
-const BrowserFS = require('browserfs')
 
 setOriginalFetch(window.fetch)
 window.fetch = progressBarFetch
@@ -44,7 +43,6 @@ const rejectStyle = {
 //global variables outside
 let fs
 let Buffer
-let cachedWasm
 
 function App () {
 
@@ -88,10 +86,8 @@ function App () {
 
   const writeFile = async e => {
     //todo change to await
-    console.log(e.target.fileName)
     let data = e.target.result.slice()
     await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
-    console.log(await fs.readFileAsync(`/${e.target.fileName}`))
     await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
     await runWasm([
       'pdfcpu.wasm',
@@ -100,7 +96,6 @@ function App () {
       `/${e.target.fileName}`,
       `/${e.target.fileName}`
     ])
-    console.log(global.fs)
     await downloadFile(`/test.pdf`)
   }
 
@@ -120,13 +115,13 @@ function App () {
     })
   }
   const runWasm = async param => {
-    if (cachedWasm === undefined) {
+    if (window.cachedWasmResponse === undefined) {
       const response = await fetch('pdfcpu.wasm')
       const buffer = await response.arrayBuffer()
-      cachedWasm = buffer
+      window.cachedWasmResponse = buffer
     }
     const { instance } = await WebAssembly.instantiate(
-      cachedWasm,
+      window.cachedWasmResponse,
       window.go.importObject
     )
     window.go.argv = param
