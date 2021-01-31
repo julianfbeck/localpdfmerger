@@ -9,8 +9,6 @@ import {
   ProgressBar,
   setOriginalFetch
 } from 'react-fetch-progressbar'
-import { Promise } from 'bluebird'
-
 const BrowserFS = require('browserfs')
 
 setOriginalFetch(window.fetch)
@@ -46,9 +44,10 @@ const rejectStyle = {
 //global variables outside
 let fs
 let Buffer
+let cachedWasm
 
 function App () {
-  let [oldFiles, setOldFiles] = React.useState()
+
   const [files, setFiles] = React.useState([])
   const onDrop = React.useCallback(acceptedFiles => {
     setFiles(prev => [...prev, ...acceptedFiles])
@@ -121,10 +120,13 @@ function App () {
     })
   }
   const runWasm = async param => {
-    const response = await fetch('pdfcpu.wasm')
-    const buffer = await response.arrayBuffer();
+    if (cachedWasm === undefined) {
+      const response = await fetch('pdfcpu.wasm')
+      const buffer = await response.arrayBuffer()
+      cachedWasm = buffer
+    }
     const { instance } = await WebAssembly.instantiate(
-      buffer,
+      cachedWasm,
       window.go.importObject
     )
     window.go.argv = param
@@ -146,8 +148,9 @@ function App () {
           <h4>Files</h4>
           <ul>{fileList}</ul>
         </aside>
-        <Button colorScheme="blue"  onClick={validate} >Merge</Button>
-
+        <Button colorScheme='blue' onClick={validate}>
+          Merge
+        </Button>
       </div>
     </ChakraProvider>
   )
