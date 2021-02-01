@@ -113,10 +113,12 @@ function App () {
     let exitCode = await runWasm([
       'pdfcpu.wasm',
       'validate',
+      '-c','disable',
       `/${e.target.fileName}`
     ])
-    if (exitCode !== 0) return
+    console.log(exitCode)
 
+    if (exitCode !== 0) return
     setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`])
     let updatedFile = files.map(file => {
       if (file.name === path.basename(e.target.fileName)) {
@@ -162,6 +164,7 @@ function App () {
     let exitcode = await runWasm([
       'pdfcpu.wasm',
       'merge',
+      '-c','disable',
       '/merge.pdf',
       validatedFiles[0],
       validatedFiles[1]
