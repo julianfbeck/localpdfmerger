@@ -138,6 +138,9 @@ function App () {
   const validate = async () => {
     console.log('saving to disk')
     files.map(async file => {
+      
+      if (file.validated) return
+
       let reader = new FileReader()
       reader.fileName = file.name
       reader.onload = writeFile
@@ -145,23 +148,14 @@ function App () {
       console.log(`Writing ${file.name} to disk`)
     })
   }
-  useEffect(() => {
-    console.log(isMerging)
-  }, [isMerging])
+
 
   const mergeFiles = async () => {
     setIsMerging(true)
-    // let exitcode = await runWasm([
-    //   'pdfcpu.wasm',
-    //   'merge',
-    //   '/merge.pdf',
-    //   ...validatedFiles
-    // ])
-    // if (exitcode !== 0) return
-    // await downloadFile(`merge.pdf`)
     await mergeOneByOne()
     setIsMerging(false)
   }
+
   const mergeOneByOne = async () => {
     if (validatedFiles.length < 2) return
     //merge first two files into merge.pdf
@@ -215,6 +209,7 @@ function App () {
   const LoadingButton = () => {
     if (isMerging) {
       return (
+        <>
         <Button
           colorScheme='blue'
           isLoading
@@ -223,6 +218,7 @@ function App () {
         >
           Merge
         </Button>
+        </>
       )
     } else {
       return (
