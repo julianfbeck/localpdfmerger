@@ -32,7 +32,7 @@ const baseStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: '20px',
+  padding: '100px',
   borderWidth: 2,
   borderRadius: 2,
   borderColor: '#eeeeee',
@@ -113,7 +113,8 @@ function App () {
     let exitCode = await runWasm([
       'pdfcpu.wasm',
       'validate',
-      '-c','disable',
+      '-c',
+      'disable',
       `/${e.target.fileName}`
     ])
     console.log(exitCode)
@@ -144,6 +145,9 @@ function App () {
       console.log(`Writing ${file.name} to disk`)
     })
   }
+  useEffect(() => {
+    console.log(isMerging)
+  }, [isMerging])
 
   const mergeFiles = async () => {
     setIsMerging(true)
@@ -164,7 +168,8 @@ function App () {
     let exitcode = await runWasm([
       'pdfcpu.wasm',
       'merge',
-      '-c','disable',
+      '-c',
+      'disable',
       '/merge.pdf',
       validatedFiles[0],
       validatedFiles[1]
@@ -175,16 +180,18 @@ function App () {
     if (exitcode !== 0) return exitcode
     //cut first two files
     let toMerge = validatedFiles.slice(2)
-    toMerge.map(async file =>  {
+    toMerge.map(async file => {
       console.log(file)
       let exitcode = await runWasm([
         'pdfcpu.wasm',
         'merge',
-        "-m",
-        "append",
+        '-m',
+        'append',
+        '-c',
+        'disable',
         '/merge.pdf',
         file
-      ])    
+      ])
       await fs.unlinkAsync(file)
       if (exitcode !== 0) return exitcode
     })
@@ -205,7 +212,30 @@ function App () {
     await window.go.run(instance)
     return window.go.exitCode
   }
-
+  const LoadingButton = () => {
+    if (isMerging) {
+      return (
+        <Button
+          colorScheme='blue'
+          isLoading
+          disabled={files <= 2}
+          onClick={mergeFiles}
+        >
+          Merge
+        </Button>
+      )
+    } else {
+      return (
+        <Button
+          colorScheme='blue'
+          disabled={files <= 2}
+          onClick={mergeFiles}
+        >
+          Merge
+        </Button>
+      )
+    }
+  }
   return (
     <ChakraProvider>
       <div className='App'>
@@ -223,7 +253,7 @@ function App () {
             {fileList}
           </Stack>
         </aside>
-        <ButtonGroup variant='outline' spacing='6'>
+        <ButtonGroup spacing='6'>
           <Button
             colorScheme='blue'
             disabled={files.every(v => v.validated === true)}
@@ -231,13 +261,7 @@ function App () {
           >
             validate
           </Button>
-          <Button colorScheme='blue' disabled={files <= 2} onClick={mergeFiles}>
-            Merge
-          </Button>
-          <MergeProgress
-            isOpen={isMerging}
-            value={mergingProgress}
-          ></MergeProgress>
+        <LoadingButton></LoadingButton>
         </ButtonGroup>
       </div>
     </ChakraProvider>
