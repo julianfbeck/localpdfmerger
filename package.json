@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "7.5.5",
+    "@chakra-ui/icons": "^1.0.4",
     "@chakra-ui/react": "^1.1.6",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",

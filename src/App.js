@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
-
+import MergeProgress from './components/progress'
 import {
   ChakraProvider,
   Button,
@@ -8,7 +8,9 @@ import {
   Box,
   Heading,
   Text,
-  ButtonGroup
+  ButtonGroup,
+  IconButton,
+  HStack
 } from '@chakra-ui/react'
 import download from 'downloadjs'
 import { useDropzone } from 'react-dropzone'
@@ -18,6 +20,8 @@ import {
   ProgressBar,
   setOriginalFetch
 } from 'react-fetch-progressbar'
+import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
+
 const path = require('path')
 
 setOriginalFetch(window.fetch)
@@ -56,6 +60,8 @@ let Buffer
 
 function App () {
   const [validatedFiles, setValidatedFiles] = useState([])
+  const [isMerging, setIsMerging] = useState(false)
+  const [mergingProgress, setMergingProgress] = useState(0)
   const [files, setFiles] = React.useState([])
   const onDrop = React.useCallback(acceptedFiles => {
     acceptedFiles.map(async file => {
@@ -113,14 +119,12 @@ function App () {
 
     setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`])
     let updatedFile = files.map(file => {
-      console.log(files)
       if (file.name === path.basename(e.target.fileName)) {
         file.validated = true
       }
       return file
     })
-    console.log(updatedFile)
-    setFiles(prev => updatedFile)
+    setFiles(updatedFile)
   }
 
   const downloadFile = async file => {
@@ -138,16 +142,52 @@ function App () {
       console.log(`Writing ${file.name} to disk`)
     })
   }
+
   const mergeFiles = async () => {
+    setIsMerging(true)
+    // let exitcode = await runWasm([
+    //   'pdfcpu.wasm',
+    //   'merge',
+    //   '/merge.pdf',
+    //   ...validatedFiles
+    // ])
+    // if (exitcode !== 0) return
+    // await downloadFile(`merge.pdf`)
+    await mergeOneByOne()
+    setIsMerging(false)
+  }
+  const mergeOneByOne = async () => {
+    if (validatedFiles.length < 2) return
+    //merge first two files into merge.pdf
     let exitcode = await runWasm([
       'pdfcpu.wasm',
       'merge',
       '/merge.pdf',
-      ...validatedFiles
+      validatedFiles[0],
+      validatedFiles[1]
     ])
-    if (exitcode !== 0) return
+    //unlink those files
+    await fs.unlinkAsync(validatedFiles[0])
+    await fs.unlinkAsync(validatedFiles[1])
+    if (exitcode !== 0) return exitcode
+    //cut first two files
+    let toMerge = validatedFiles.slice(2)
+    toMerge.map(async file =>  {
+      console.log(file)
+      let exitcode = await runWasm([
+        'pdfcpu.wasm',
+        'merge',
+        "-m",
+        "append",
+        '/merge.pdf',
+        file
+      ])    
+      await fs.unlinkAsync(file)
+      if (exitcode !== 0) return exitcode
+    })
     await downloadFile(`merge.pdf`)
   }
+
   const runWasm = async param => {
     if (window.cachedWasmResponse === undefined) {
       const response = await fetch('pdfcpu.wasm')
@@ -174,6 +214,7 @@ function App () {
             <p>Drag 'n' drop some files here, or click to select files</p>
           </div>
         </div>
+        <Button colorScheme='blue'>Sort Alphabetically</Button>
         <aside>
           <Stack spacing={8} m={3}>
             {fileList}
@@ -190,6 +231,10 @@ function App () {
           <Button colorScheme='blue' disabled={files <= 2} onClick={mergeFiles}>
             Merge
           </Button>
+          <MergeProgress
+            isOpen={isMerging}
+            value={mergingProgress}
+          ></MergeProgress>
         </ButtonGroup>
       </div>
     </ChakraProvider>
@@ -201,9 +246,15 @@ function App () {
 function FileComp ({ file, size, validated }) {
   return (
     <Box p={5} shadow='md' borderWidth='1px'>
-      <Heading fontSize='xl'>{file}</Heading>
-      <Text mt={4}>Size: {bytesToSize(size)}</Text>
-      <ValidatedBage validated={validated}></ValidatedBage>
+      <HStack spacing='24px'>
+        <Heading fontSize='xl'>{file}</Heading>
+        <Text mt={4}>Size: {bytesToSize(size)}</Text>
+        <ValidatedBage validated={validated}></ValidatedBage>
+        <ButtonGroup size='sm' isAttached variant='outline'>
+          <IconButton aria-label='Up' icon={<ArrowUpIcon />} />
+          <IconButton aria-label='Down' icon={<ArrowDownIcon />} />
+        </ButtonGroup>
+      </HStack>
     </Box>
   )
 }
@@ -222,10 +273,10 @@ function ValidatedBage ({ validated }) {
     )
   }
 }
-function bytesToSize(bytes) {
-  var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  if (bytes == 0) return '0 Byte';
-  var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+function bytesToSize (bytes) {
+  var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+  if (bytes == 0) return '0 Byte'
+  var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
 }
 export default App
