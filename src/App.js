@@ -1,6 +1,15 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 
-import { ChakraProvider, Button, ButtonGroup } from '@chakra-ui/react'
+import {
+  ChakraProvider,
+  Button,
+  Badge,
+  Stack,
+  Box,
+  Heading,
+  Text,
+  ButtonGroup
+} from '@chakra-ui/react'
 import download from 'downloadjs'
 import { useDropzone } from 'react-dropzone'
 import './App.css'
@@ -9,6 +18,7 @@ import {
   ProgressBar,
   setOriginalFetch
 } from 'react-fetch-progressbar'
+const path = require('path')
 
 setOriginalFetch(window.fetch)
 window.fetch = progressBarFetch
@@ -45,9 +55,12 @@ let fs
 let Buffer
 
 function App () {
-  const [validatedFiles, setValidatedFiles] = useState([]);
+  const [validatedFiles, setValidatedFiles] = useState([])
   const [files, setFiles] = React.useState([])
   const onDrop = React.useCallback(acceptedFiles => {
+    acceptedFiles.map(async file => {
+      file.validated = false
+    })
     setFiles(prev => [...prev, ...acceptedFiles])
   }, [])
 
@@ -70,9 +83,12 @@ function App () {
   )
 
   const fileList = files.map(file => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
+    <FileComp
+      key={file.path}
+      file={file.path}
+      size={file.size}
+      validated={file.validated}
+    ></FileComp>
   ))
 
   const init = useCallback(async () => {
@@ -88,10 +104,23 @@ function App () {
     //todo change to await
     let data = e.target.result.slice()
     await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
-    let  exitCode = await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
-    if (exitCode != 0) return
-    
-    setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`]);
+    let exitCode = await runWasm([
+      'pdfcpu.wasm',
+      'validate',
+      `/${e.target.fileName}`
+    ])
+    if (exitCode !== 0) return
+
+    setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`])
+    let updatedFile = files.map(file => {
+      console.log(files)
+      if (file.name === path.basename(e.target.fileName)) {
+        file.validated = true
+      }
+      return file
+    })
+    console.log(updatedFile)
+    setFiles(prev => updatedFile)
   }
 
   const downloadFile = async file => {
@@ -107,18 +136,17 @@ function App () {
       reader.onload = writeFile
       reader.readAsArrayBuffer(file)
       console.log(`Writing ${file.name} to disk`)
-      
     })
   }
   const mergeFiles = async () => {
     let exitcode = await runWasm([
       'pdfcpu.wasm',
       'merge',
-      '/merge.pdf', ...validatedFiles
+      '/merge.pdf',
+      ...validatedFiles
     ])
-    if (exitcode != 0) return
+    if (exitcode !== 0) return
     await downloadFile(`merge.pdf`)
-
   }
   const runWasm = async param => {
     if (window.cachedWasmResponse === undefined) {
@@ -147,15 +175,22 @@ function App () {
           </div>
         </div>
         <aside>
-          <h4>Files</h4>
-          <ul>{fileList}</ul>
+          <Stack spacing={8} m={3}>
+            {fileList}
+          </Stack>
         </aside>
-        <Button colorScheme='blue' onClick={validate}>
-          validate
-        </Button>
-        <Button colorScheme='blue' onClick={mergeFiles}>
-          Merge
-        </Button>
+        <ButtonGroup variant='outline' spacing='6'>
+          <Button
+            colorScheme='blue'
+            disabled={files.every(v => v.validated === true)}
+            onClick={validate}
+          >
+            validate
+          </Button>
+          <Button colorScheme='blue' disabled={files <= 2} onClick={mergeFiles}>
+            Merge
+          </Button>
+        </ButtonGroup>
       </div>
     </ChakraProvider>
   )
@@ -163,4 +198,34 @@ function App () {
 
 // Configures BrowserFS to use the LocalStorage file system.
 
+function FileComp ({ file, size, validated }) {
+  return (
+    <Box p={5} shadow='md' borderWidth='1px'>
+      <Heading fontSize='xl'>{file}</Heading>
+      <Text mt={4}>Size: {bytesToSize(size)}</Text>
+      <ValidatedBage validated={validated}></ValidatedBage>
+    </Box>
+  )
+}
+function ValidatedBage ({ validated }) {
+  if (validated) {
+    return (
+      <Badge variant='solid' colorScheme='green'>
+        Validated
+      </Badge>
+    )
+  } else {
+    return (
+      <Badge variant='solid' colorScheme='red'>
+        Not Validated
+      </Badge>
+    )
+  }
+}
+function bytesToSize(bytes) {
+  var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes == 0) return '0 Byte';
+  var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+}
 export default App
