@@ -163,24 +163,6 @@
 			});
 		}
 
-		// global.fs = new Proxy(global.fs, handler); // <- "install" the handler for proxy;
-
-		/*
-			open(path, flags, mode, callback) {
-				const err = new Error("not implemented");
-				err.code = "ENOSYS";
-				callback(err);
-			},
-			read(fd, buffer, offset, length, position, callback) {
-				const err = new Error("not implemented");
-				err.code = "ENOSYS";
-				callback(err);
-			},
-			fsync(fd, callback) {
-				callback(null);
-			},
-		};
-		*/
 	}
 
 	const encoder = new TextEncoder("utf-8");

@@ -35,9 +35,7 @@
 		err.code = "ENOSYS";
 		return err;
 	};
-	var myfs = global.BrowserFS.BFSRequire('fs');
-	global.Buffer = global.BrowserFS.BFSRequire('buffer').Buffer;
-	global.fs = myfs;
+
 	if (!global.fs) {
 		let outputBuf = "";
 		global.fs = {
