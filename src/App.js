@@ -45,7 +45,7 @@ let fs
 let Buffer
 
 function App () {
-
+  const [validatedFiles, setValidatedFiles] = useState([]);
   const [files, setFiles] = React.useState([])
   const onDrop = React.useCallback(acceptedFiles => {
     setFiles(prev => [...prev, ...acceptedFiles])
@@ -88,15 +88,10 @@ function App () {
     //todo change to await
     let data = e.target.result.slice()
     await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
-    await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
-    await runWasm([
-      'pdfcpu.wasm',
-      'merge',
-      '/test.pdf',
-      `/${e.target.fileName}`,
-      `/${e.target.fileName}`
-    ])
-    await downloadFile(`/test.pdf`)
+    let  exitCode = await runWasm(['pdfcpu.wasm', 'validate', `/${e.target.fileName}`])
+    if (exitCode != 0) return
+    
+    setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`]);
   }
 
   const downloadFile = async file => {
@@ -112,7 +107,18 @@ function App () {
       reader.onload = writeFile
       reader.readAsArrayBuffer(file)
       console.log(`Writing ${file.name} to disk`)
+      
     })
+  }
+  const mergeFiles = async () => {
+    let exitcode = await runWasm([
+      'pdfcpu.wasm',
+      'merge',
+      '/merge.pdf', ...validatedFiles
+    ])
+    if (exitcode != 0) return
+    await downloadFile(`merge.pdf`)
+
   }
   const runWasm = async param => {
     if (window.cachedWasmResponse === undefined) {
@@ -126,6 +132,7 @@ function App () {
     )
     window.go.argv = param
     await window.go.run(instance)
+    return window.go.exitCode
   }
 
   return (
@@ -144,6 +151,9 @@ function App () {
           <ul>{fileList}</ul>
         </aside>
         <Button colorScheme='blue' onClick={validate}>
+          validate
+        </Button>
+        <Button colorScheme='blue' onClick={mergeFiles}>
           Merge
         </Button>
       </div>
