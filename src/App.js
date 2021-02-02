@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import MergeProgress from './components/progress'
+import DropzoneField from './components/dropzone'
+
 import {
   ChakraProvider,
   Button,
@@ -13,7 +15,6 @@ import {
   HStack
 } from '@chakra-ui/react'
 import download from 'downloadjs'
-import { useDropzone } from 'react-dropzone'
 import './App.css'
 import {
   progressBarFetch,
@@ -27,33 +28,6 @@ const path = require('path')
 setOriginalFetch(window.fetch)
 window.fetch = progressBarFetch
 
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '100px',
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out'
-}
-
-const activeStyle = {
-  borderColor: '#2196f3'
-}
-
-const acceptStyle = {
-  borderColor: '#00e676'
-}
-
-const rejectStyle = {
-  borderColor: '#ff1744'
-}
 //global variables outside
 let fs
 let Buffer
@@ -61,32 +35,7 @@ let Buffer
 function App () {
   const [validatedFiles, setValidatedFiles] = useState([])
   const [isMerging, setIsMerging] = useState(false)
-  const [mergingProgress, setMergingProgress] = useState(0)
   const [files, setFiles] = React.useState([])
-  const onDrop = React.useCallback(acceptedFiles => {
-    acceptedFiles.map(async file => {
-      file.validated = false
-    })
-    setFiles(prev => [...prev, ...acceptedFiles])
-  }, [])
-
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject
-  } = useDropzone({ onDrop, accept: 'application/pdf' })
-
-  const style = useMemo(
-    () => ({
-      ...baseStyle,
-      ...(isDragActive ? activeStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {})
-    }),
-    [isDragActive, isDragReject, isDragAccept]
-  )
 
   const fileList = files.map(file => (
     <FileComp
@@ -138,7 +87,6 @@ function App () {
   const validate = async () => {
     console.log('saving to disk')
     files.map(async file => {
-      
       if (file.validated) return
 
       let reader = new FileReader()
@@ -148,7 +96,6 @@ function App () {
       console.log(`Writing ${file.name} to disk`)
     })
   }
-
 
   const mergeFiles = async () => {
     setIsMerging(true)
@@ -206,43 +153,36 @@ function App () {
     await window.go.run(instance)
     return window.go.exitCode
   }
+
   const LoadingButton = () => {
     if (isMerging) {
       return (
         <>
-        <Button
-          colorScheme='blue'
-          isLoading
-          disabled={files <= 2}
-          onClick={mergeFiles}
-        >
-          Merge
-        </Button>
+          <Button
+            colorScheme='blue'
+            isLoading
+            disabled={files <= 2}
+            onClick={mergeFiles}
+          >
+            Merge
+          </Button>
         </>
       )
     } else {
       return (
-        <Button
-          colorScheme='blue'
-          disabled={files <= 2}
-          onClick={mergeFiles}
-        >
+        <Button colorScheme='blue' disabled={files <= 2} onClick={mergeFiles}>
           Merge
         </Button>
       )
     }
   }
+
   return (
     <ChakraProvider>
       <div className='App'>
         <ProgressBar style={{ marginBottom: '10px' }} />
 
-        <div className='container'>
-          <div {...getRootProps({ style })}>
-            <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
-          </div>
-        </div>
+        <DropzoneField setFiles={setFiles}></DropzoneField>
         <Button colorScheme='blue'>Sort Alphabetically</Button>
         <aside>
           <Stack spacing={8} m={3}>
@@ -257,7 +197,7 @@ function App () {
           >
             validate
           </Button>
-        <LoadingButton></LoadingButton>
+          <LoadingButton></LoadingButton>
         </ButtonGroup>
       </div>
     </ChakraProvider>
