@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import MergeProgress from './components/progress'
 import DropzoneField from './components/dropzone'
+import customTheme from "./styles/theme"
 
 import {
   ChakraProvider,
+  extendTheme,
   Button,
   Badge,
   Stack,
@@ -24,6 +26,8 @@ import {
 import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
 
 const path = require('path')
+const theme = extendTheme(customTheme)
+
 
 setOriginalFetch(window.fetch)
 window.fetch = progressBarFetch
@@ -178,7 +182,7 @@ function App () {
   }
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <div className='App'>
         <ProgressBar style={{ marginBottom: '10px' }} />
 
