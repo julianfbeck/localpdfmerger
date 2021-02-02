@@ -39,6 +39,8 @@ function App () {
   const [validatedFiles, setValidatedFiles] = useState([])
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = React.useState([])
+  const [sorted, SetSorted] = React.useState(false)
+
 
   const init = useCallback(async () => {
     fs = global.fs
@@ -81,6 +83,10 @@ function App () {
   const sortAlpabetically = () => {
     let sortedFiles = files
     sortedFiles.sort((a, b) => a.path.localeCompare(b.path));
+    if (sorted) {
+      sortedFiles.reverse()
+    }
+    SetSorted(val => !val)
     setFiles(prev => [ ...sortedFiles])
 
   }
