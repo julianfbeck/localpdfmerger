@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import MergeProgress from './components/progress'
 import DropzoneField from './components/dropzone'
-import customTheme from "./styles/theme"
+import customTheme from './styles/theme'
 
 import {
   ChakraProvider,
@@ -28,7 +28,6 @@ import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
 const path = require('path')
 const theme = extendTheme(customTheme)
 
-
 setOriginalFetch(window.fetch)
 window.fetch = progressBarFetch
 
@@ -41,15 +40,6 @@ function App () {
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = React.useState([])
 
-  const fileList = files.map(file => (
-    <FileComp
-      key={file.path}
-      file={file.path}
-      size={file.size}
-      validated={file.validated}
-    ></FileComp>
-  ))
-
   const init = useCallback(async () => {
     fs = global.fs
     Buffer = global.Buffer
@@ -58,6 +48,7 @@ function App () {
   useEffect(() => {
     init()
   }, [init])
+
 
   const writeFile = async e => {
     //todo change to await
@@ -87,7 +78,12 @@ function App () {
     let data = await fs.readFileAsync(file)
     download(new Blob([data]), file)
   }
+  const sortAlpabetically = () => {
+    let sortedFiles = files
+    sortedFiles.sort((a, b) => a.path.localeCompare(b.path));
+    setFiles(prev => [ ...sortedFiles])
 
+  }
   const validate = async () => {
     console.log('saving to disk')
     files.map(async file => {
@@ -187,10 +183,10 @@ function App () {
         <ProgressBar style={{ marginBottom: '10px' }} />
 
         <DropzoneField setFiles={setFiles}></DropzoneField>
-        <Button colorScheme='blue'>Sort Alphabetically</Button>
+        <Button colorScheme='blue' onClick= {sortAlpabetically}>Sort Alphabetically</Button>
         <aside>
           <Stack spacing={8} m={3}>
-            {fileList}
+            <FileList setFiles={setFiles} files={files}></FileList>
           </Stack>
         </aside>
         <ButtonGroup spacing='6'>
@@ -210,7 +206,56 @@ function App () {
 
 // Configures BrowserFS to use the LocalStorage file system.
 
-function FileComp ({ file, size, validated }) {
+function FileList ({ files, setFiles }) {
+  
+  useEffect(() => {
+  }, [files])
+
+  return files.map(file => (
+    <FileComp
+      key={file.path}
+      file={file.path}
+      size={file.size}
+      validated={file.validated}
+      setFiles={setFiles}
+      files={files}
+    ></FileComp>
+  ))
+}
+
+function FileComp ({ file, size, validated, setFiles, files }) {
+  const [index, setIndex] = useState(-1)
+  useEffect(() => {
+    setIndex(
+      files
+        .map(function (e) {
+          return e.path
+        })
+        .indexOf(file)
+    )
+  }, [files])
+  const down = () => {
+    if (index != files.length - 1) {
+      let newFiles = files
+      moveItem(index, index + 1, newFiles)
+      
+      setFiles(prev => [ ...newFiles])
+
+    }
+  }
+  const up = () => {
+    if (index > 0) {
+      let newFiles = files
+      moveItem(index, index -1, newFiles)
+      setFiles(prev => [ ...newFiles])
+    }
+
+  }
+
+  function moveItem (from, to, arr) {
+    let el = arr.splice(from, 1)[0]
+    arr.splice(to, 0, el)
+  }
   return (
     <Box p={5} shadow='md' borderWidth='1px'>
       <HStack spacing='24px'>
@@ -218,8 +263,13 @@ function FileComp ({ file, size, validated }) {
         <Text mt={4}>Size: {bytesToSize(size)}</Text>
         <ValidatedBage validated={validated}></ValidatedBage>
         <ButtonGroup size='sm' isAttached variant='outline'>
-          <IconButton aria-label='Up' icon={<ArrowUpIcon />} />
-          <IconButton aria-label='Down' icon={<ArrowDownIcon />} />
+          <IconButton aria-label='Up' onClick={up} disabled={index==0} icon={<ArrowUpIcon />} />
+          <IconButton
+            aria-label='Down'
+            onClick={down}
+            disabled={index==files.length-1} 
+            icon={<ArrowDownIcon />}
+          />
         </ButtonGroup>
       </HStack>
     </Box>
