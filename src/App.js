@@ -1,8 +1,8 @@
 import React from 'react'
-
 import customTheme from './styles/theme'
-
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
+
 import './App.css'
 import {
   progressBarFetch,
@@ -23,7 +23,16 @@ function App () {
     <ChakraProvider theme={theme}>
       <div className='App'>
         <ProgressBar style={{ marginBottom: '10px' }} />
-        <Merge></Merge>
+        <BrowserRouter>
+            <Switch>
+              <Route exact path='/'>
+              <Merge></Merge>
+              </Route>
+              <Route path='/create'>
+              <Merge></Merge>
+              </Route>
+            </Switch>
+          </BrowserRouter>
       </div>
     </ChakraProvider>
   )
