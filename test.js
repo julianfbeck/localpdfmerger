@@ -1,2 +1,8 @@
 const fs  = require("fs")
-console.log(fs.constants)
+let file_fd = fs.openSync('test.pdf', 'r'); 
+
+fs.fstat(file_fd, (error, stats) => { 
+
+    console.log(stats)
+  }); 
+console.log(new Date())

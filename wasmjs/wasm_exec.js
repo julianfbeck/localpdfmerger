@@ -132,6 +132,8 @@
 		global.fs.fstat = function(fd, callback) {
 			return global.fs.fstatOriginal(fd, function() {
 				var retStat = arguments[1];
+				console.log(arguments[1])
+
 				delete retStat['fileData'];
 				retStat.atimeMs = retStat.atime.getTime();
 				retStat.mtimeMs = retStat.mtime.getTime();

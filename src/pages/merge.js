@@ -91,7 +91,7 @@ const Merge = () => {
   }
 
   const mergeOneByOne = async () => {
-      console.log(validatedFiles)
+    console.log(validatedFiles)
     if (validatedFiles.length < 2) return
     //merge first two files into merge.pdf
     console.log(`Merging ${validatedFiles[0]} ${validatedFiles[1]} `)
@@ -112,20 +112,21 @@ const Merge = () => {
     if (exitcode !== 0) return exitcode
     //cut first two files
     let toMerge = validatedFiles.slice(2)
-    for (const file of toMerge){
-        let exitcode = await runWasm([
-            'pdfcpu.wasm',
-            'merge',
-            '-m',
-            'append',
-            '-c',
-            'disable',
-            '/merge.pdf',
-            file
-          ])
-          console.log(`Removing ${file}`)
-          await fs.unlinkAsync(file)
-          if (exitcode !== 0) return exitcode
+
+    for (const file of toMerge) {
+      let exitcode = await runWasm([
+        'pdfcpu.wasm',
+        'merge',
+        '-m',
+        'append',
+        '-c',
+        'disable',
+        '/merge.pdf',
+        file
+      ])
+      console.log(`Removing ${file}`)
+      await fs.unlinkAsync(file)
+      if (exitcode !== 0) return exitcode
     }
 
     await downloadFile(`merge.pdf`)
