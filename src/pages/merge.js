@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
 
-import MergeProgress from '../components/progress'
 import DropzoneField from '../components/dropzone'
 const path = require('path')
 let fs
