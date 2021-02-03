@@ -138,6 +138,7 @@
 			}
 			// TODO: handle other cases
 
+
 			return global.fs.openOriginal(path, myflags, mode, callback);
 		};
 

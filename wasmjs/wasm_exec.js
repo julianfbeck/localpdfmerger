@@ -96,7 +96,6 @@
 		};
 
 		global.fs.openOriginal = global.fs.open
-		console.log(global.fs)
 		global.fs.open = function(path, flags, mode, callback) {
 			var myflags = 'r';
 			var O = global.fs.constants;
@@ -122,17 +121,21 @@
 				throw new Error("Not implmented");
 			}
 			// TODO: handle other cases
+			console.log(path)
+			console.log(flags)
+			console.log(mode)
+			console.log(myflags)
 			
 			
 
 			return global.fs.openOriginal(path, myflags, mode, callback);
 		};
 
+
 		global.fs.fstatOriginal = global.fs.fstat;
 		global.fs.fstat = function(fd, callback) {
 			return global.fs.fstatOriginal(fd, function() {
 				var retStat = arguments[1];
-				console.log(arguments[1])
 
 				delete retStat['fileData'];
 				retStat.atimeMs = retStat.atime.getTime();
@@ -144,6 +147,7 @@
 
 			});
 		};
+
 
 		global.fs.closeOriginal = global.fs.close;
 		global.fs.close = function(fd, callback) {
