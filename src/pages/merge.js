@@ -44,7 +44,6 @@ const Merge = () => {
       'disable',
       `/${e.target.fileName}`
     ])
-    console.log(exitCode)
 
     if (exitCode !== 0) return
     setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`])
@@ -61,6 +60,7 @@ const Merge = () => {
     let data = await fs.readFileAsync(file)
     download(new Blob([data]), file)
   }
+
   const sortAlpabetically = () => {
     let sortedFiles = files
     sortedFiles.sort((a, b) => a.path.localeCompare(b.path))
@@ -70,6 +70,7 @@ const Merge = () => {
     SetSorted(val => !val)
     setFiles(prev => [...sortedFiles])
   }
+
   const validate = async () => {
     console.log('saving to disk')
     files.map(async file => {
@@ -90,8 +91,11 @@ const Merge = () => {
   }
 
   const mergeOneByOne = async () => {
+      console.log(validatedFiles)
     if (validatedFiles.length < 2) return
     //merge first two files into merge.pdf
+    console.log(`Merging ${validatedFiles[0]} ${validatedFiles[1]} `)
+
     let exitcode = await runWasm([
       'pdfcpu.wasm',
       'merge',
@@ -104,24 +108,26 @@ const Merge = () => {
     //unlink those files
     await fs.unlinkAsync(validatedFiles[0])
     await fs.unlinkAsync(validatedFiles[1])
+    console.log(`Removing ${validatedFiles[0]} ${validatedFiles[1]} `)
     if (exitcode !== 0) return exitcode
     //cut first two files
     let toMerge = validatedFiles.slice(2)
-    toMerge.map(async file => {
-      console.log(file)
-      let exitcode = await runWasm([
-        'pdfcpu.wasm',
-        'merge',
-        '-m',
-        'append',
-        '-c',
-        'disable',
-        '/merge.pdf',
-        file
-      ])
-      await fs.unlinkAsync(file)
-      if (exitcode !== 0) return exitcode
-    })
+    for (const file of toMerge){
+        let exitcode = await runWasm([
+            'pdfcpu.wasm',
+            'merge',
+            '-m',
+            'append',
+            '-c',
+            'disable',
+            '/merge.pdf',
+            file
+          ])
+          console.log(`Removing ${file}`)
+          await fs.unlinkAsync(file)
+          if (exitcode !== 0) return exitcode
+    }
+
     await downloadFile(`merge.pdf`)
   }
 

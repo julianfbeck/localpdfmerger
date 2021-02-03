@@ -61,12 +61,19 @@
 		global.fs.writeSyncOriginal = global.fs.writeSync
 		global.fs.writeSync = function(fd, buf) {
 			if (fd === 1 || fd === 2) {
+
 				outputBuf += decoder.decode(buf);
+
+
 				const nl = outputBuf.lastIndexOf("\n");
-				if (nl != -1) {
-					console.log(outputBuf.substr(0, nl));
-					outputBuf = outputBuf.substr(nl + 1);
-				}
+				console.log("hier1")
+					if (nl != -1) {
+
+						console.log(outputBuf.substr(0, nl));
+
+						outputBuf = outputBuf.substr(nl + 1);
+					}
+				
 				return buf.length;
 			} else {
 				return global.fs.writeSyncOriginal(...arguments);
@@ -199,7 +206,6 @@
 			this.env = {};
 			this.exit = (code) => {
 				this.exitCode = code;
-
 				if (code !== 0) {
 					console.warn("exit code:", code);
 				}
