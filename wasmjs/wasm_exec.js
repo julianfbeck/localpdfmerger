@@ -358,18 +358,17 @@
 			});
 		}
 
-		global.fs.renameOriginal = global.fs.rename
-		global.fs.rename = function (from, to, callback) {
-			console.log("rename a0", arguments[0])
-			global.fs.renameOriginal(from, to);
-			callback(arguments[0])
-		}
-		console.log(global.fs)
+		// global.fs.renameOriginal = global.fs.rename
+		// global.fs.rename = function (from, to, callback) {
+		// 	console.log("rename a0", arguments[0])
+		// 	global.fs.renameOriginal(from, to);
+		// 	callback(arguments[0])
+		// }
 
-		global.fs.renameSyncOriginal = global.fs.renameSync
-		global.fs.renameSync = function(fd, options) {
-			console.log("Sync")
-		}
+		// global.fs.renameSyncOriginal = global.fs.renameSync
+		// global.fs.renameSync = function(fd, options) {
+		// 	console.log("Sync")
+		// }
 
 
 		global.fs = new Proxy(global.fs, handler);
