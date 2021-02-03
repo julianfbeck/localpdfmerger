@@ -120,6 +120,7 @@
 			} else if (flags & O.O_APPEND) { // 'a'
 				throw new Error("Not implmented");
 			}
+			//"https://github.com/pdfcpu/pdfcpu/blob/master/pkg/api/merge.go"
 			// TODO: handle other cases
 			console.log(path)
 			console.log(flags)
