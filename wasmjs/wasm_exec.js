@@ -42,6 +42,7 @@
 		global.fs = myfs;
 		let outputBuf = "";
 		global.fs.constants = {
+			
 			O_RDONLY: 0,
 			O_WRONLY: 1,
 			O_RDWR: 2,
@@ -66,7 +67,6 @@
 
 
 				const nl = outputBuf.lastIndexOf("\n");
-				console.log("hier1")
 					if (nl != -1) {
 
 						console.log(outputBuf.substr(0, nl));
@@ -123,8 +123,7 @@
 			}
 			// TODO: handle other cases
 			
-
-				
+			
 
 			return global.fs.openOriginal(path, myflags, mode, callback);
 		};
@@ -138,6 +137,7 @@
 				retStat.mtimeMs = retStat.mtime.getTime();
 				retStat.ctimeMs = retStat.ctime.getTime();
 				retStat.birthtimeMs = retStat.birthtime.getTime();
+
 				return callback(arguments[0], retStat);
 
 			});
