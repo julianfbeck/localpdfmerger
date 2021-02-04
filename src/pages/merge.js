@@ -189,7 +189,7 @@ const Merge = () => {
               <DragDrop setState={setFiles} state={files}></DragDrop>
             </Stack>
           </aside>
-          <ButtonGroup spacing='6'>
+          <Flex spacing='6'>
             <Button
               colorScheme='blue'
               variant='outline'
@@ -199,6 +199,8 @@ const Merge = () => {
               Sort Alphabetically
             </Button>
             <Button
+            ml={3}
+            mr={3}
               colorScheme='blue'
               disabled={files.every(v => v.validated === true)}
               onClick={validate}
@@ -207,7 +209,7 @@ const Merge = () => {
               validate
             </Button>
             <LoadingButton></LoadingButton>
-          </ButtonGroup>
+          </Flex>
         </Box>
       </Flex>
     </>
