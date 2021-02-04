@@ -36,7 +36,7 @@ const DropzoneField = ({ setFiles }) => {
       file.validated = false
     })
     setFiles(prev => [...prev, ...acceptedFiles])
-  }, [])
+  }, [setFiles])
   const {
     getRootProps,
     getInputProps,
