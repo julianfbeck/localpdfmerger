@@ -28,7 +28,7 @@ function App () {
               <Route exact path='/'>
               <Merge></Merge>
               </Route>
-              <Route path='/create'>
+              <Route path='/merge'>
               <Merge></Merge>
               </Route>
             </Switch>
