@@ -55,6 +55,7 @@
     "postcss-safe-parser": "4.0.1",
     "react": "^16.9.0",
     "react-app-polyfill": "^1.0.2",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dev-utils": "^9.0.3",
     "react-dom": "^16.9.0",
     "react-dropzone": "^11.2.4",
