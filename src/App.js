@@ -20,13 +20,14 @@ window.fetch = progressBarFetch
 
 function App () {
   return (
-    <ChakraProvider theme={theme}>
-      <div className='App'>
+    <div >
+    <ChakraProvider theme={theme} >
+      <div className="custom"  >
         <ProgressBar style={{ marginBottom: '10px' }} />
         <BrowserRouter>
             <Switch>
               <Route exact path='/'>
-              <Merge></Merge>
+              <Merge ></Merge>
               </Route>
               <Route path='/merge'>
               <Merge></Merge>
@@ -35,6 +36,7 @@ function App () {
           </BrowserRouter>
       </div>
     </ChakraProvider>
+    </div>
   )
 }
 
