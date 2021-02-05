@@ -1,16 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import download from 'downloadjs'
-import {
-  Button,
-  Stack,
-  Box,
-  ButtonGroup,
-  Flex,
-} from '@chakra-ui/react'
+import { Button, Stack, Box, Flex } from '@chakra-ui/react'
 import '../App.css'
 
 import DropzoneField from '../components/dropzone'
-import DragDrop from "../components/DragDrop"
+import DragDrop from '../components/DragDrop'
 
 const path = require('path')
 let fs
@@ -173,21 +167,21 @@ const Merge = () => {
   }
   return (
     <>
-      <Flex width='full' height="full" align='center'  justifyContent='center'>
+      <Flex width='full' height='full' align='center' justifyContent='center'>
         <Box
           p={8}
           maxWidth='80%'
           borderWidth={1}
           borderRadius={8}
           boxShadow='lg'
-          backgroundColor="white"
+          backgroundColor='white'
         >
           <DropzoneField setFiles={setFiles}></DropzoneField>
 
           <aside>
             <Stack spacing={8} m={3}>
-              <div className={`${files.length >3 ? "customList" : ""}`}>
-              <DragDrop  setState={setFiles} state={files}></DragDrop>
+              <div className={`${files.length > 3 ? 'customList' : ''}`}>
+                <DragDrop setState={setFiles} state={files}></DragDrop>
               </div>
             </Stack>
           </aside>
@@ -196,13 +190,13 @@ const Merge = () => {
               colorScheme='blue'
               variant='outline'
               onClick={sortAlpabetically}
-              disabled={files.length <2}
+              disabled={files.length < 2}
             >
               Sort Alphabetically
             </Button>
             <Button
-            ml={3}
-            mr={3}
+              ml={3}
+              mr={3}
               colorScheme='blue'
               disabled={files.every(v => v.validated === true)}
               onClick={validate}
