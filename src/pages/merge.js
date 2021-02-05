@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import download from 'downloadjs'
 import { Button, Stack, Box, Flex } from '@chakra-ui/react'
 import '../App.css'
+import toast, { Toaster } from 'react-hot-toast'
 
 import DropzoneField from '../components/dropzone'
 import DragDrop from '../components/DragDrop'
@@ -24,7 +25,7 @@ const Merge = () => {
     init()
   }, [init])
 
-  const writeFile = async e => {
+  const loadFileIntoMemory = async e => {
     //todo change to await
     let data = e.target.result.slice()
     await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
@@ -52,27 +53,47 @@ const Merge = () => {
     download(new Blob([data]), file)
   }
 
-  const sortAlpabetically = () => {
-    let sortedFiles = files
-    sortedFiles.sort((a, b) => a.path.localeCompare(b.path))
-    if (sorted) {
-      sortedFiles.reverse()
-    }
-    SetSorted(val => !val)
-    setFiles(prev => [...sortedFiles])
-  }
-
-  const validate = async () => {
-    console.log('saving to disk')
-    files.map(async file => {
-      if (file.validated) return
+  function readFileAsync (file) {
+    return new Promise((resolve, reject) => {
+      console.log(`Writing ${file.name} to disk`)
+      if (file.isLoaded) return resolve()
 
       let reader = new FileReader()
       reader.fileName = file.name
-      reader.onload = writeFile
+      reader.onload = loadFileIntoMemory
+
+      reader.onload = async e => {
+
+        let data = e.target.result.slice()
+        await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
+        let exitCode = await runWasm([
+          'pdfcpu.wasm',
+          'validate',
+          '-c',
+          'disable',
+          `/${e.target.fileName}`
+        ])
+
+        if (exitCode !== 0) return reject()
+        let updatedFile = files.map(file => {
+          if (file.name === path.basename(e.target.fileName)) {
+            file.validated = true
+            file.isLoaded = true
+          }
+          return file
+        })
+        setFiles(updatedFile)
+        resolve(reader.result)
+      }
+
+      reader.onerror = reject
+
       reader.readAsArrayBuffer(file)
-      console.log(`Writing ${file.name} to disk`)
     })
+  }
+
+  const test = async () => {
+    await readFileAsync(files[0])
   }
 
   const mergeFiles = async () => {
@@ -165,6 +186,15 @@ const Merge = () => {
       )
     }
   }
+  const sortAlpabetically = () => {
+    let sortedFiles = files
+    sortedFiles.sort((a, b) => a.path.localeCompare(b.path))
+    if (sorted) {
+      sortedFiles.reverse()
+    }
+    SetSorted(val => !val)
+    setFiles(prev => [...sortedFiles])
+  }
   return (
     <>
       <Flex width='full' height='full' align='center' justifyContent='center'>
@@ -177,7 +207,7 @@ const Merge = () => {
           backgroundColor='white'
         >
           <DropzoneField setFiles={setFiles}></DropzoneField>
-
+          <Toaster />
           <aside>
             <Stack spacing={8} m={3}>
               <div className={`${files.length > 3 ? 'customList' : ''}`}>
@@ -198,8 +228,7 @@ const Merge = () => {
               ml={3}
               mr={3}
               colorScheme='blue'
-              disabled={files.every(v => v.validated === true)}
-              onClick={validate}
+              onClick={test}
               variant='outline'
             >
               validate

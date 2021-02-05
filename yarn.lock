@@ -5821,6 +5821,11 @@ globby@^9.0.0:
     pify "^4.0.1"
     slash "^2.0.0"
 
+goober@^2.0.15:
+  version "2.0.30"
+  resolved "https://registry.yarnpkg.com/goober/-/goober-2.0.30.tgz#fb3034d904002bac17eb2be6a8f1f8daf72a4970"
+  integrity sha512-fVAgCTKFGWw1oBvUSAyLjZJBur/BUn5tmUSaGx5ryPddYJYNrCsvkzSoCnE1O8/5EiDK0UYbWilBUp44hKekRw==
+
 got@^8.3.1:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/got/-/got-8.3.2.tgz#1d23f64390e97f776cac52e5b936e5f514d2e937"
@@ -9735,6 +9740,13 @@ react-focus-lock@2.4.1:
     react-clientside-effect "^1.2.2"
     use-callback-ref "^1.2.1"
     use-sidecar "^1.0.1"
+
+react-hot-toast@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-hot-toast/-/react-hot-toast-1.0.2.tgz#162f020ba7c0b20f2f25bb7738458c435e84107c"
+  integrity sha512-wp89H0WA6EtiexAg5l3ys+WaZ3u0xM/FJWxl6YxR3hlquWhKvO9snBgTe4ATPEcgbS6pbc43RbuBINOkYOzA5A==
+  dependencies:
+    goober "^2.0.15"
 
 react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4:
   version "16.13.1"

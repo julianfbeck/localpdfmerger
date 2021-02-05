@@ -60,6 +60,7 @@
     "react-dom": "^16.9.0",
     "react-dropzone": "^11.2.4",
     "react-fetch-progressbar": "^1.0.0",
+    "react-hot-toast": "^1.0.2",
     "react-lottie": "^1.2.3",
     "react-router-dom": "^5.2.0",
     "resolve": "1.12.0",
