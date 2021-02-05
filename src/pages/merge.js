@@ -3,6 +3,8 @@ import download from 'downloadjs'
 import { Button, Stack, Box, Flex } from '@chakra-ui/react'
 import '../App.css'
 import toast, { Toaster } from 'react-hot-toast'
+import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
+
 
 import DropzoneField from '../components/dropzone'
 import DragDrop from '../components/DragDrop'
@@ -11,7 +13,6 @@ const path = require('path')
 let fs
 let Buffer
 const Merge = () => {
-  const [validatedFiles, setValidatedFiles] = useState([])
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = React.useState([])
   const [sorted, SetSorted] = React.useState(false)
@@ -25,45 +26,20 @@ const Merge = () => {
     init()
   }, [init])
 
-  const loadFileIntoMemory = async e => {
-    //todo change to await
-    let data = e.target.result.slice()
-    await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
-    let exitCode = await runWasm([
-      'pdfcpu.wasm',
-      'validate',
-      '-c',
-      'disable',
-      `/${e.target.fileName}`
-    ])
-
-    if (exitCode !== 0) return
-    setValidatedFiles(oldArray => [...oldArray, `/${e.target.fileName}`])
-    let updatedFile = files.map(file => {
-      if (file.name === path.basename(e.target.fileName)) {
-        file.validated = true
-      }
-      return file
-    })
-    setFiles(updatedFile)
-  }
-
   const downloadFile = async file => {
     let data = await fs.readFileAsync(file)
     download(new Blob([data]), file)
   }
 
-  function readFileAsync (file) {
+  const readFileAsync = file => {
     return new Promise((resolve, reject) => {
       console.log(`Writing ${file.name} to disk`)
       if (file.isLoaded) return resolve()
 
       let reader = new FileReader()
       reader.fileName = file.name
-      reader.onload = loadFileIntoMemory
 
       reader.onload = async e => {
-
         let data = e.target.result.slice()
         await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data))
         let exitCode = await runWasm([
@@ -92,10 +68,6 @@ const Merge = () => {
     })
   }
 
-  const test = async () => {
-    await readFileAsync(files[0])
-  }
-
   const mergeFiles = async () => {
     setIsMerging(true)
     await mergeOneByOne()
@@ -103,9 +75,21 @@ const Merge = () => {
   }
 
   const mergeOneByOne = async () => {
-    if (validatedFiles.length < 2) return
+    if (files.length < 2) return
     //merge first two files into merge.pdf
-    console.log(`Merging ${validatedFiles[0]} ${validatedFiles[1]} `)
+    const toastId = toast.loading(`Merging ${files[0].path} ${files[1].path} `)
+    console.log(`Merging ${files[0].path} ${files[1].path}`)
+    //toast start
+    try {
+      await readFileAsync(files[0])
+      await readFileAsync(files[1])
+    } catch (error) {
+      console.log(error)
+      //toast
+      toast.error('There was an error loading your PDFs',{
+        id: toastId
+      })
+    }
 
     let exitcode = await runWasm([
       'pdfcpu.wasm',
@@ -113,21 +97,43 @@ const Merge = () => {
       '-c',
       'disable',
       '/merge.pdf',
-      validatedFiles[0],
-      validatedFiles[1]
+      files[0].path,
+      files[1].path
     ])
-    await fs.unlinkAsync(validatedFiles[0])
-    await fs.unlinkAsync(validatedFiles[1])
-
-    if (validatedFiles.length == 2) {
-      await downloadFile(`merge.pdf`)
-      await fs.unlinkAsync('./merge.pdf')
+    if (exitcode !== 0) {
+      //toast
+      toast.error('There was an error merging your PDFs',{
+        id: toastId
+      })
       return
     }
-    const nextFiles = validatedFiles.slice(2)
+    await fs.unlinkAsync(files[0].path)
+    await fs.unlinkAsync(files[1].path)
+
+    if (files.length === 2) {
+      await downloadFile(`merge.pdf`)
+      await fs.unlinkAsync('./merge.pdf')
+      toast.success('Your File ist Ready!',{
+        id: toastId
+      })
+      return
+    }
+    const nextFiles = files.slice(2)
     while (nextFiles.length > 0) {
       await fs.renameSync('./merge.pdf', './mergetmp.pdf')
       let nextFile = nextFiles.shift()
+      toast.loading(`Merging ${files[0].path} ${files[1].path}`,{
+        id: toastId
+      })
+      try {
+        await readFileAsync(nextFile)
+      } catch (error) {
+        console.log(error)
+        toast.error('There was an error loading your PDFs',{
+          id: toastId
+        })
+      }
+
       let exitcode = await runWasm([
         'pdfcpu.wasm',
         'merge',
@@ -135,12 +141,20 @@ const Merge = () => {
         'disable',
         '/merge.pdf',
         './mergetmp.pdf',
-        nextFile
+        nextFile.path
       ])
-      if (exitcode !== 0) return exitcode
-      await fs.unlinkAsync(nextFile)
+      if (exitcode !== 0) {
+        toast.error('There was an error merging your PDF',{
+          id: toastId
+        })
+      }
+      await fs.unlinkAsync(nextFile.path)
     }
+    //finished
     await downloadFile(`merge.pdf`)
+    toast.success('Your File ist Ready!',{
+      id: toastId
+    })
   }
 
   const runWasm = async param => {
@@ -224,15 +238,9 @@ const Merge = () => {
             >
               Sort Alphabetically
             </Button>
-            <Button
-              ml={3}
-              mr={3}
-              colorScheme='blue'
-              onClick={test}
-              variant='outline'
-            >
-              validate
-            </Button>
+            <Button rightIcon={<ArrowUpIcon />}  variant="outline">
+    Call us
+  </Button>
             <LoadingButton></LoadingButton>
           </Flex>
         </Box>
