@@ -186,7 +186,9 @@ const Merge = () => {
 
           <aside>
             <Stack spacing={8} m={3}>
-              <DragDrop setState={setFiles} state={files}></DragDrop>
+              <div className={`${files.length >3 ? "customList" : ""}`}>
+              <DragDrop  setState={setFiles} state={files}></DragDrop>
+              </div>
             </Stack>
           </aside>
           <Flex spacing='6'>
