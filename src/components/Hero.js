@@ -56,17 +56,25 @@ export default function Hero({
         </Heading>
         <Link to={ctaLink}>
           <Button
-            variantColor="primary"
             borderRadius="8px"
             py="4"
             px="4"
             lineHeight="1"
             size="md"
-            rightIcon="chevron-right"
           >
             {ctaText}
           </Button>
         </Link>
+        <Button
+            borderRadius="8px"
+            py="4"
+            px="4"
+            lineHeight="1"
+            size="md"
+            disabled={true}
+          >
+            More Coming soon
+          </Button>
         <Text
           fontSize="xs"
           mt={2}
@@ -74,7 +82,7 @@ export default function Hero({
           color="primary.800"
           opacity="0.6"
         >
-          No credit card required.
+          Powered by Webassembly and pdfcpu
         </Text>
       </Stack>
       <Box w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>

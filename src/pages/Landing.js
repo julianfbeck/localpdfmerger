@@ -7,11 +7,11 @@ export default function Landing() {
   return (
     <LandingLayout>
       <Hero
-        title="Build this rad landing page from scratch"
-        subtitle="This is the subheader section where you describe the basic benefits of your product"
-        image="https://source.unsplash.com/collection/404339/800x600"
-        ctaText="Create your account now"
-        ctaLink="/create"
+        title="Local PDF Tools"
+        subtitle="Merge multible PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+        image="/files.jpg"
+        ctaText="Merge PDFs"
+        ctaLink="/merge"
       />
     </LandingLayout>
   );

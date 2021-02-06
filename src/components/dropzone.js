@@ -6,7 +6,30 @@ const baseStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  padding: '100px',
+  paddingTop: '100px',
+  paddingBottom: "100px",
+  paddingLeft:'100px',
+  paddingRight:"100px",
+  borderWidth: 2,
+  borderRadius: 2,
+  borderColor: '#eeeeee',
+  borderStyle: 'dashed',
+  backgroundColor: '#fafafa',
+  color: '#bdbdbd',
+  outline: 'none',
+  transition: 'border .24s ease-in-out',
+  cursor: 'pointer'
+}
+
+const secondStyle = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  paddingTop: '40px',
+  paddingBottom: "40px",
+  paddingLeft:'100px',
+  paddingRight:"100px",
   borderWidth: 2,
   borderRadius: 2,
   borderColor: '#eeeeee',
@@ -30,7 +53,7 @@ const rejectStyle = {
   borderColor: '#ff1744'
 }
 
-const DropzoneField = ({ setFiles }) => {
+const DropzoneField = ({ setFiles, files }) => {
   const onDrop = useCallback(acceptedFiles => {
     acceptedFiles.map(async file => {
       file.validated = false
@@ -47,19 +70,19 @@ const DropzoneField = ({ setFiles }) => {
 
   const style = useMemo(
     () => ({
-      ...baseStyle,
+      ...(files.length === 0 ? baseStyle : secondStyle),
       ...(isDragActive ? activeStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {})
     }),
-    [isDragActive, isDragReject, isDragAccept]
+    [isDragActive, isDragReject, isDragAccept, files]
   )
 
   return (
     <div className='container'>
       <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
+        <p>Drag 'n' drop PDF files here, or click to select files to merge</p>
       </div>
     </div>
   )

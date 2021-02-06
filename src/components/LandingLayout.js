@@ -13,7 +13,6 @@ export default function LandingLayout(props) {
     >
       <Header />
       {props.children}
-      {/* <Footer /> */}
     </Flex>
   );
 }

@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import download from 'downloadjs'
-import { Button, Stack, Box, Flex } from '@chakra-ui/react'
+import {
+  Button,
+  Stack,
+  Box,
+  Flex,
+  Heading,
+  Center,
+  Text, Spacer
+} from '@chakra-ui/react'
 import '../App.css'
 import toast, { Toaster } from 'react-hot-toast'
 import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
@@ -178,7 +186,7 @@ const Merge = () => {
           <Button
             colorScheme='blue'
             isLoading
-            disabled={files <= 2}
+            disabled={files < 2 || isMerging}
             onClick={mergeFiles}
             variant='outline'
           >
@@ -191,7 +199,7 @@ const Merge = () => {
         <Button
           colorScheme='blue'
           variant='outline'
-          disabled={files <= 2}
+          disabled={files < 2 || isMerging}
           onClick={mergeFiles}
         >
           Merge
@@ -212,14 +220,28 @@ const Merge = () => {
     <>
       <Flex width='full' height='full' align='center' justifyContent='center'>
         <Box
-          p={8}
+          p={6}
           maxWidth='80%'
           borderWidth={1}
           borderRadius={8}
           boxShadow='lg'
           backgroundColor='white'
         >
-          <DropzoneField setFiles={setFiles}></DropzoneField>
+          <Center>
+            {' '}
+            <Heading
+              as='h2'
+              size='lg'
+              fontWeight='bold'
+              color='primary.800'
+              textAlign={['center', 'center', 'left', 'left']}
+              pb={2}
+            >
+              Merge PDFs
+            </Heading>
+          </Center>
+
+          <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
           <aside>
             <Stack spacing={8} m={3}>
@@ -228,31 +250,38 @@ const Merge = () => {
               </div>
             </Stack>
           </aside>
-          <Flex spacing='6'>
-            <div>
-              {sorted ? (
-                <Button
-                  rightIcon={<ArrowUpIcon />}
-                  onClick={sortAlpabetically}
-                  disabled={files.length < 2}
-                  colorScheme='blue'
-                  variant='outline'
-                >
-                  Sort A
-                </Button>
-              ) : (
-                <Button
-                  rightIcon={<ArrowDownIcon />}
-                  onClick={sortAlpabetically}
-                  disabled={files.length < 2}
-                  colorScheme='blue'
-                  variant='outline'
-                >
-                  Sort A
-                </Button>
-              )}
-            </div>
-
+          <Text
+            fontSize='xs'
+            m={2}
+            textAlign='center'
+            color='primary.800'
+            opacity='0.6'
+          >
+            {files.length ===0 ?"":"You can drag and drop files to sort"}
+          </Text>
+          <Flex row={2}>
+            {sorted ? (
+              <Button
+                rightIcon={<ArrowUpIcon />}
+                onClick={sortAlpabetically}
+                disabled={files.length < 2 || isMerging}
+                colorScheme='blue'
+                variant='outline'
+              >
+                Sort A
+              </Button>
+            ) : (
+              <Button
+                rightIcon={<ArrowDownIcon />}
+                onClick={sortAlpabetically}
+                disabled={files.length < 2 || isMerging}
+                colorScheme='blue'
+                variant='outline'
+              >
+                Sort A
+              </Button>
+            )}
+            <Spacer />
             <LoadingButton></LoadingButton>
           </Flex>
         </Box>
