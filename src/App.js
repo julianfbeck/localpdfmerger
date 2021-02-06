@@ -2,6 +2,8 @@ import React from 'react'
 import customTheme from './styles/theme'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-123121612-3');
 
 import './App.css'
 import {
