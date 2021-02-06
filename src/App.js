@@ -13,6 +13,7 @@ import Merge from './pages/merge'
 
 const theme = extendTheme(customTheme)
 ReactGA.initialize('UA-123121612-3')
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 
 setOriginalFetch(window.fetch)
