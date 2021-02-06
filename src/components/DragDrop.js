@@ -19,7 +19,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 function File({ file, index }) {
   return (
-    <Draggable draggableId={file.path} index={index}>
+    <Draggable draggableId={file.path} index={index} >
       {provided => (
              <Box p={5} className="item" shadow='md' borderWidth='1px' borderRadius={4}
              boxShadow='lg' ref={provided.innerRef}
@@ -64,7 +64,7 @@ const  DragDrop = ({state, setState}) => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="list">
+      <Droppable droppableId="list" >
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             <QuoteList files={state} />

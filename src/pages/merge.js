@@ -5,7 +5,6 @@ import '../App.css'
 import toast, { Toaster } from 'react-hot-toast'
 import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
 
-
 import DropzoneField from '../components/dropzone'
 import DragDrop from '../components/DragDrop'
 
@@ -86,7 +85,7 @@ const Merge = () => {
     } catch (error) {
       console.log(error)
       //toast
-      toast.error('There was an error loading your PDFs',{
+      toast.error('There was an error loading your PDFs', {
         id: toastId
       })
     }
@@ -102,7 +101,7 @@ const Merge = () => {
     ])
     if (exitcode !== 0) {
       //toast
-      toast.error('There was an error merging your PDFs',{
+      toast.error('There was an error merging your PDFs', {
         id: toastId
       })
       return
@@ -113,7 +112,7 @@ const Merge = () => {
     if (files.length === 2) {
       await downloadFile(`merge.pdf`)
       await fs.unlinkAsync('./merge.pdf')
-      toast.success('Your File ist Ready!',{
+      toast.success('Your File ist Ready!', {
         id: toastId
       })
       return
@@ -122,14 +121,14 @@ const Merge = () => {
     while (nextFiles.length > 0) {
       await fs.renameSync('./merge.pdf', './mergetmp.pdf')
       let nextFile = nextFiles.shift()
-      toast.loading(`Merging ${files[0].path} ${files[1].path}`,{
+      toast.loading(`Merging ${files[0].path} ${files[1].path}`, {
         id: toastId
       })
       try {
         await readFileAsync(nextFile)
       } catch (error) {
         console.log(error)
-        toast.error('There was an error loading your PDFs',{
+        toast.error('There was an error loading your PDFs', {
           id: toastId
         })
       }
@@ -144,7 +143,7 @@ const Merge = () => {
         nextFile.path
       ])
       if (exitcode !== 0) {
-        toast.error('There was an error merging your PDF',{
+        toast.error('There was an error merging your PDF', {
           id: toastId
         })
       }
@@ -152,7 +151,7 @@ const Merge = () => {
     }
     //finished
     await downloadFile(`merge.pdf`)
-    toast.success('Your File ist Ready!',{
+    toast.success('Your File ist Ready!', {
       id: toastId
     })
   }
@@ -230,17 +229,30 @@ const Merge = () => {
             </Stack>
           </aside>
           <Flex spacing='6'>
-            <Button
-              colorScheme='blue'
-              variant='outline'
-              onClick={sortAlpabetically}
-              disabled={files.length < 2}
-            >
-              Sort Alphabetically
-            </Button>
-            <Button rightIcon={<ArrowUpIcon />}  variant="outline">
-    Call us
-  </Button>
+            <div>
+              {sorted ? (
+                <Button
+                  rightIcon={<ArrowUpIcon />}
+                  onClick={sortAlpabetically}
+                  disabled={files.length < 2}
+                  colorScheme='blue'
+                  variant='outline'
+                >
+                  Sort A
+                </Button>
+              ) : (
+                <Button
+                  rightIcon={<ArrowDownIcon />}
+                  onClick={sortAlpabetically}
+                  disabled={files.length < 2}
+                  colorScheme='blue'
+                  variant='outline'
+                >
+                  Sort A
+                </Button>
+              )}
+            </div>
+
             <LoadingButton></LoadingButton>
           </Flex>
         </Box>
