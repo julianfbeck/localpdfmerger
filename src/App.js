@@ -2,9 +2,7 @@ import React from 'react'
 import customTheme from './styles/theme'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import { Switch, Route, BrowserRouter } from 'react-router-dom'
-import ReactGA from 'react-ga';
-ReactGA.initialize('UA-123121612-3');
-
+import ReactGA from 'react-ga'
 import './App.css'
 import {
   progressBarFetch,
@@ -14,6 +12,8 @@ import {
 import Merge from './pages/merge'
 
 const theme = extendTheme(customTheme)
+ReactGA.initialize('UA-123121612-3')
+
 
 setOriginalFetch(window.fetch)
 window.fetch = progressBarFetch
@@ -22,22 +22,22 @@ window.fetch = progressBarFetch
 
 function App () {
   return (
-    <div >
-    <ChakraProvider theme={theme} >
-      <div className="custom"  >
-        <ProgressBar style={{ marginBottom: '10px' }} />
-        <BrowserRouter>
+    <div>
+      <ChakraProvider theme={theme}>
+        <div className='custom'>
+          <ProgressBar style={{ marginBottom: '10px' }} />
+          <BrowserRouter>
             <Switch>
               <Route exact path='/'>
-              <Merge ></Merge>
+                <Merge></Merge>
               </Route>
               <Route path='/merge'>
-              <Merge></Merge>
+                <Merge></Merge>
               </Route>
             </Switch>
           </BrowserRouter>
-      </div>
-    </ChakraProvider>
+        </div>
+      </ChakraProvider>
     </div>
   )
 }
