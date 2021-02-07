@@ -187,7 +187,7 @@ const Merge = () => {
           <Button
             colorScheme='blue'
             isLoading
-            disabled={files < 2 || isMerging}
+            disabled={files.length < 2 || isMerging}
             onClick={mergeFiles}
             variant='outline'
           >
@@ -200,7 +200,7 @@ const Merge = () => {
         <Button
           colorScheme='blue'
           variant='outline'
-          disabled={files < 2 || isMerging}
+          disabled={files.length < 2 || isMerging}
           onClick={mergeFiles}
         >
           Merge
