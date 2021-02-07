@@ -7,7 +7,7 @@ import {
   Flex,
   Heading,
   Center,
-  Text, Spacer
+  Text, Spacer, Fade
 } from '@chakra-ui/react'
 import '../App.css'
 import toast, { Toaster } from 'react-hot-toast'
@@ -19,6 +19,7 @@ import DragDrop from '../components/DragDrop'
 const path = require('path')
 let fs
 let Buffer
+
 const Merge = () => {
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = React.useState([])
@@ -86,13 +87,11 @@ const Merge = () => {
     //merge first two files into merge.pdf
     const toastId = toast.loading(`Merging ${files[0].path} ${files[1].path} `)
     console.log(`Merging ${files[0].path} ${files[1].path}`)
-    //toast start
     try {
       await readFileAsync(files[0])
       await readFileAsync(files[1])
     } catch (error) {
       console.log(error)
-      //toast
       toast.error('There was an error loading your PDFs', {
         id: toastId
       })
@@ -108,7 +107,7 @@ const Merge = () => {
       files[1].path
     ])
     if (exitcode !== 0) {
-      //toast
+
       toast.error('There was an error merging your PDFs', {
         id: toastId
       })
@@ -123,6 +122,7 @@ const Merge = () => {
       toast.success('Your File ist Ready!', {
         id: toastId
       })
+      setFiles([])
       return
     }
     const nextFiles = files.slice(2)
@@ -162,6 +162,7 @@ const Merge = () => {
     toast.success('Your File ist Ready!', {
       id: toastId
     })
+    setFiles([])
   }
 
   const runWasm = async param => {
@@ -228,7 +229,6 @@ const Merge = () => {
           backgroundColor='white'
         >
           <Center>
-            {' '}
             <Heading
               as='h2'
               size='lg'
@@ -240,15 +240,16 @@ const Merge = () => {
               Merge PDFs
             </Heading>
           </Center>
-
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
           <aside>
+            <Fade in={files.length !== 0} reverse>
             <Stack spacing={8} m={3}>
               <div className={`${files.length > 3 ? 'customList' : ''}`}>
-                <DragDrop setState={setFiles} state={files}></DragDrop>
+                <DragDrop setState={setFiles} state={files} isMerging={isMerging}></DragDrop>
               </div>
             </Stack>
+            </Fade>
           </aside>
           <Text
             fontSize='xs'

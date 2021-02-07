@@ -11,9 +11,9 @@ const reorder = (list, startIndex, endIndex) => {
   return result
 }
 
-function File ({ file, index }) {
+function File ({ file, index, isMerging}) {
   return (
-    <Draggable draggableId={file.path} index={index}>
+    <Draggable draggableId={file.path} index={index} isDragDisabled ={isMerging}>
       {provided => (
         <Box
           p={5}
@@ -38,13 +38,13 @@ function File ({ file, index }) {
   )
 }
 
-const QuoteList = React.memo(function QuoteList ({ files }) {
+const QuoteList = React.memo(function QuoteList ({ files, isMerging }) {
   return files.map((file, index) => (
-    <File file={file} index={index} key={file.path} />
+    <File file={file} index={index} key={file.path} isMerging={isMerging} />
   ))
 })
 
-const DragDrop = ({ state, setState }) => {
+const DragDrop = ({ state, setState, isMerging }) => {
   function onDragEnd (result) {
     if (!result.destination) {
       return
@@ -64,7 +64,7 @@ const DragDrop = ({ state, setState }) => {
       <Droppable droppableId='list'>
         {provided => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            <QuoteList files={state} />
+            <QuoteList files={state} isMerging={isMerging} />
             {provided.placeholder}
           </div>
         )}
