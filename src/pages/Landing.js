@@ -9,7 +9,7 @@ export default function Landing() {
       <Hero
         title="Local PDF Tools"
         subtitle="Merge multible PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
-        image="/files.jpg"
+        image="/files.svg"
         ctaText="Merge PDFs"
         ctaLink="/merge"
       />
