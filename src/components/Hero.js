@@ -14,6 +14,7 @@ import {
 export default function Hero({
   title,
   subtitle,
+  subtitle2,
   image,
   ctaLink,
   ctaText,
@@ -54,6 +55,17 @@ export default function Hero({
         >
           {subtitle}
         </Heading>
+        <Heading
+          as="h2"
+          size="md"
+          color="primary.800"
+          opacity="0.8"
+          fontWeight="normal"
+          lineHeight={1.5}
+          textAlign={["center", "center", "left", "left"]}
+        >
+          {subtitle2}
+        </Heading>
         <Link to={ctaLink}>
           <Button
             borderRadius="8px"
@@ -82,7 +94,7 @@ export default function Hero({
           color="primary.800"
           opacity="0.6"
         >
-          Powered by Webassembly and pdfcpu
+          Powered by <u><a href="https://webassembly.org/">Webassembly</a></u> and <u><a href="https://github.com/pdfcpu/pdfcpu">pdfcpu</a></u>. Built by <u><a href="http://julianbeck.com/">Julian Beck</a></u>
         </Text>
       </Stack>
       <Box w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>

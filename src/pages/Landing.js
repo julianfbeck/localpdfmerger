@@ -8,9 +8,10 @@ export default function Landing() {
     <LandingLayout>
       <Hero
         title="Local PDF Tools"
-        subtitle="Merge multible PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+        subtitle="Local PDF uses Webassembly to edit your PDFs inside your Browser. Your files won't leave your System, they will not be send to another server"
+        subtitle2="Currently we support merging PDFs. You can combine multiple PDF files into one large File."
         image="/files.svg"
-        ctaText="Merge PDFs"
+        ctaText="Start Merging PDFs"
         ctaLink="/merge"
       />
     </LandingLayout>
