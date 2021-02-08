@@ -261,7 +261,7 @@ const Merge = () => {
             {files.length ===0 ?"":"You can drag and drop files to sort"}
           </Text>
           <Flex row={2}>
-            {sorted ? (
+            {!sorted ? (
               <Button
                 rightIcon={<ArrowUpIcon />}
                 onClick={sortAlpabetically}
