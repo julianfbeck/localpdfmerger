@@ -1,8 +1,9 @@
 import React from 'react'
-import '../App.css'
+//import '../App.css'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Box, Heading, Text, Flex, Spacer } from '@chakra-ui/react'
-
+import { GetServerSideProps } from "next";
+import { resetServerContext } from "react-beautiful-dnd";
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list)
   const [removed] = result.splice(startIndex, 1)
@@ -10,6 +11,13 @@ const reorder = (list, startIndex, endIndex) => {
 
   return result
 }
+
+
+
+export const getServerSideProps = async (context) => {
+  resetServerContext();
+  return { props: {} };
+};
 
 function File ({ file, index, isMerging}) {
   return (
