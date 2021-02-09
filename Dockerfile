@@ -19,4 +19,4 @@ COPY --from=build /build/public ./public
 RUN npm install next
 
 EXPOSE 80
-CMD npm run start -p 80
+CMD npm run start 
