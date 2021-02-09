@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import Head from 'next/head'
 import download from 'downloadjs'
 import {
   Button,
@@ -244,7 +245,21 @@ const Merge = () => {
     setFiles(prev => [...sortedFiles])
   }
   return (
-    <>
+    <><Head>
+    <title>Merge PDF Files - Combine multible PDF Files into one</title>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <meta name='theme-color' content='#000000' />
+    <meta
+      name='description'
+      content="Merge multible PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+    />
+    <meta
+      name='keywords'
+      content='Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu'
+    />
+    <meta name='author' content='Julian Beck' />
+  </Head>
       <ScriptTag isHydrating={true} type='text/javascript' src='wasm_exec.js' />
       <Flex width='full' height='full' align='center' justifyContent='center'>
         <Box
