@@ -7,6 +7,7 @@ export default function Home () {
   return (
     <>
       <Head>
+        <title>Merge PDF Files - PDF Tools, Local PDF Tools - Right in your Browser</title>
         <meta charset='UTF-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <meta name='theme-color' content='#000000' />

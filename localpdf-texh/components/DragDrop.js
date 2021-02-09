@@ -30,6 +30,7 @@ function File ({ file, index, isMerging}) {
           borderWidth='1px'
           borderRadius={4}
           boxShadow='lg'
+          backgroundColor='white'
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}

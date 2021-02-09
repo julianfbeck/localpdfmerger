@@ -6,11 +6,6 @@
       xmlns:xhtml="http://www.w3.org/1999/xhtml">
       
 	<url>
-		<loc>localpdf.tech/api/hello</loc>
-		<lastmod>2021-02-09</lastmod>
-	</url>
-
-	<url>
 		<loc>localpdf.tech/index</loc>
 		<lastmod>2021-02-09</lastmod>
 	</url>

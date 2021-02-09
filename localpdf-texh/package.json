@@ -22,6 +22,7 @@
     "react-dom": "16.13.0",
     "react-dropzone": "^11.3.1",
     "react-hot-toast": "^1.0.2",
+    "react-script-tag": "^1.1.2",
     "sharp": "^0.26.3"
   }
 }

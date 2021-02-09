@@ -7,26 +7,54 @@ import {
   Flex,
   Heading,
   Center,
-  Text, Spacer, Fade
+  Text,
+  Spacer,
+  Fade
 } from '@chakra-ui/react'
 import toast, { Toaster } from 'react-hot-toast'
-import { ArrowUpIcon, ArrowDownIcon } from '@chakra-ui/icons'
+import { BFSRequire, configure } from 'browserfs'
+import dynamic from 'next/dynamic'
+import ScriptTag from 'react-script-tag'
 
 import DropzoneField from '../components/dropzone'
 import DragDrop from '../components/DragDrop'
+import { promisifyAll } from 'bluebird'
+import { createBreakpoints } from '@chakra-ui/theme-tools'
 
 const path = require('path')
 let fs
 let Buffer
-
+const test = dynamic(import('../scripts/wasm_exec'))
+const breakpoints = createBreakpoints({
+  sm: '30em',
+  md: '48em',
+  lg: '62em',
+  xl: '80em',
+  '2xl': '96em'
+})
 const Merge = () => {
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = React.useState([])
   const [sorted, SetSorted] = React.useState(false)
 
   const init = useCallback(async () => {
-    fs = global.fs
-    Buffer = global.Buffer
+    configure(
+      {
+        fs: 'InMemory'
+      },
+      function (e) {
+        if (e) {
+          // An error happened!
+          throw e
+        }
+        fs = promisifyAll(BFSRequire('fs'))
+
+        Buffer = BFSRequire('buffer').Buffer
+        global.fs = fs
+        global.Buffer = Buffer
+        global.go = new Go()
+      }
+    )
   }, [])
 
   useEffect(() => {
@@ -106,7 +134,6 @@ const Merge = () => {
       files[1].path
     ])
     if (exitcode !== 0) {
-
       toast.error('There was an error merging your PDFs', {
         id: toastId
       })
@@ -218,10 +245,11 @@ const Merge = () => {
   }
   return (
     <>
+      <ScriptTag isHydrating={true} type='text/javascript' src='wasm_exec.js' />
       <Flex width='full' height='full' align='center' justifyContent='center'>
         <Box
-          p={6}
-          maxWidth='80%'
+          p={8}
+          maxWidth={['100%','95%',"80%"]}
           borderWidth={1}
           borderRadius={8}
           boxShadow='lg'
@@ -243,11 +271,15 @@ const Merge = () => {
           <Toaster />
           <aside>
             <Fade in={files.length !== 0} reverse>
-            <Stack spacing={8} m={3}>
-              <div className={`${files.length > 3 ? 'customList' : ''}`}>
-                <DragDrop setState={setFiles} state={files} isMerging={isMerging}></DragDrop>
-              </div>
-            </Stack>
+              <Stack spacing={8} m={3}>
+                <div className={`${files.length > 3 ? 'customList' : ''}`}>
+                  <DragDrop
+                    setState={setFiles}
+                    state={files}
+                    isMerging={isMerging}
+                  ></DragDrop>
+                </div>
+              </Stack>
             </Fade>
           </aside>
           <Text
@@ -257,7 +289,7 @@ const Merge = () => {
             color='primary.800'
             opacity='0.6'
           >
-            {files.length ===0 ?"":"You can drag and drop files to sort"}
+            {files.length === 0 ? '' : 'You can drag and drop files to sort'}
           </Text>
           <Flex row={2}>
             {!sorted ? (
@@ -267,7 +299,7 @@ const Merge = () => {
                 colorScheme='blue'
                 variant='outline'
               >
-                Sort A
+                Sort
               </Button>
             ) : (
               <Button
