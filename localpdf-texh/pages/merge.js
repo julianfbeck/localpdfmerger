@@ -16,6 +16,8 @@ import toast, { Toaster } from 'react-hot-toast'
 import { BFSRequire, configure } from 'browserfs'
 import dynamic from 'next/dynamic'
 import ScriptTag from 'react-script-tag'
+import * as gtag from '../scripts/gtag'
+
 
 import DropzoneField from '../components/dropzone'
 import DragDrop from '../components/DragDrop'
@@ -53,7 +55,7 @@ const Merge = () => {
         Buffer = BFSRequire('buffer').Buffer
         global.fs = fs
         global.Buffer = Buffer
-        global.go = new Go()
+        
       }
     )
   }, [])
@@ -111,6 +113,9 @@ const Merge = () => {
   }
 
   const mergeOneByOne = async () => {
+    gtag.event({
+      action: 'merge',
+    })
     if (files.length < 2) return
     //merge first two files into merge.pdf
     const toastId = toast.loading(`Merging ${files[0].path} ${files[1].path} `)
@@ -197,6 +202,7 @@ const Merge = () => {
       const response = await fetch('pdfcpu.wasm')
       const buffer = await response.arrayBuffer()
       window.cachedWasmResponse = buffer
+      global.go = new Go()
     }
     const { instance } = await WebAssembly.instantiate(
       window.cachedWasmResponse,
