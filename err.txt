@@ -1,4 +1,0 @@
-Currently Error in 
-ci /usr/local/go/src/syscall/fs_js.go
-atime := int64(jsSt.Get("atimeMs").Int())
-Caused by i dont know

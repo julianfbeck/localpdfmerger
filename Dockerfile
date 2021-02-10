@@ -1,17 +1,22 @@
-# build environment
-FROM node:15.7.0-alpine3.10 as build
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json ./
-COPY yarn.lock ./
-RUN yarn install 
-RUN yarn global add  --ignore-optional react-scripts 
-COPY . ./
-RUN node scripts/build.js
+FROM node:current-alpine AS base
+WORKDIR /base
+COPY package*.json ./
+RUN npm install
+COPY . .
 
-# production environment
-FROM nginx:stable-alpine
-COPY --from=build /app/build /usr/share/nginx/html
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+FROM base AS build
+ENV NODE_ENV=production
+WORKDIR /build
+COPY --from=base /base ./
+RUN npm run build
+
+FROM node:current-alpine AS production
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=build /build/package*.json ./
+COPY --from=build /build/.next ./.next
+COPY --from=build /build/public ./public
+RUN npm install next
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD npm run start 

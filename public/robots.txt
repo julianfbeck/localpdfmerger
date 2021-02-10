@@ -1,2 +1,4 @@
-# https://www.robotstxt.org/robotstxt.html
+Sitemap: https://localpdf.tech/sitemap.xml
+
 User-agent: *
+Allow: /*
