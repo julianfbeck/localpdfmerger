@@ -13,7 +13,7 @@ export default function Home () {
         <meta name='theme-color' content='#000000' />
         <meta
           name='description'
-          content="Merge multible PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+          content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
         />
         <meta
           name='keywords'

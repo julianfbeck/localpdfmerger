@@ -256,13 +256,13 @@ const Merge = () => {
   }
   return (
     <><Head>
-    <title>Merge PDF Files - Combine multible PDF Files into one</title>
+    <title>Merge PDF Files - Combine multiple PDF Files into one</title>
     <meta charSet='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1' />
     <meta name='theme-color' content='#000000' />
     <meta
       name='description'
-      content="Merge multible PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+      content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
     />
     <meta
       name='keywords'
