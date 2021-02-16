@@ -19,7 +19,12 @@ export default function Home () {
           name='keywords'
           content='Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu'
         />
-        <meta name='author' content='Julian Beck' />
+       <meta name='author' content='Julian Beck' />
+       <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@Kickbeak" />
+        <meta name="twitter:title" content="Merge PDF Files - PDF Tools, Local PDF Tools - Right in your Browser" />
+        <meta name="twitter:description" content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs!" />
+        <meta name="twitter:image" content="https://github.com/jufabeck2202/go-wasm-pdfmerge/blob/master/logo.jpeg?raw=true" />
       </Head>
       <LandingLayout>
         <Hero
