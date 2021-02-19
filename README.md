@@ -1,5 +1,5 @@
 # Localpdf.tech
-<img src="https://raw.githubusercontent.com/jufabeck2202/localpdfmerger/main/logo.jpeg" width="30%">
+<img src="https://raw.githubusercontent.com/jufabeck2202/localpdfmerger/804e32f18b0c26014ff2ab9f6a34afeaadc6d472/public/files.svg" width="30%">
 
 > Local PDF uses Webassembly to edit your PDFs inside your Browser. Your files won't leave your System, they will not be send to another server
 
