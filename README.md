@@ -1,5 +1,6 @@
 # Localpdf.tech
 <img src="https://raw.githubusercontent.com/jufabeck2202/localpdfmerger/main/logo.jpeg" width="40%">
+
 > Local PDF uses Webassembly to edit your PDFs inside your Browser. Your files won't leave your System, they will not be send to another server
 
 This Website uses [pdfcpu](https://github.com/pdfcpu/pdfcpu "pdfcpu") and is based on of [this](https://dev.to/wcchoi/browser-side-pdf-processing-with-go-and-webassembly-13hn "this") article by [wcchoi](https://github.com/wcchoi "wcchoi").
