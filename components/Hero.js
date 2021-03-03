@@ -94,9 +94,18 @@ export default function Hero({
           color="primary.800"
           opacity="0.6"
         >
-          Powered by <u><a href="https://webassembly.org/">Webassembly</a></u> and <u><a href="https://github.com/pdfcpu/pdfcpu">pdfcpu</a></u>. Built by <u><a href="http://julianbeck.com/">Julian Beck</a></u>
-          This app is Open Source, you can find the source code <u><a href="https://github.com/jufabeck2202/localpdfmerger">here</a></u>    
+          Powered by <u><a href="https://webassembly.org/">Webassembly</a></u> and <u><a href="https://github.com/pdfcpu/pdfcpu">pdfcpu</a></u>. Built by <u><a href="http://julianbeck.com/">Julian Beck</a></u>    
     </Text>
+       <Text
+          fontSize="xs"
+          mt={1}
+          textAlign="center"
+          color="primary.800"
+          opacity="0.6"
+        >
+          This app is Open Source,
+          you can find the Code <u><a href="https://github.com/jufabeck2202/localpdfmerger">here</a></u>
+        </Text>
       </Stack>
       <Box w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
         {/* TODO: Make this change every X secs */}
