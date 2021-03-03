@@ -36,8 +36,8 @@ const breakpoints = createBreakpoints({
 })
 const Merge = () => {
   const [isMerging, setIsMerging] = useState(false)
-  const [files, setFiles] = React.useState([])
-  const [sorted, SetSorted] = React.useState(false)
+  const [files, setFiles] = useState([])
+  const [sorted, SetSorted] = useState(false)
 
   const init = useCallback(async () => {
     configure(
