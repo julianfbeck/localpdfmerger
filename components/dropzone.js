@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import toast from 'react-hot-toast'
 
 const baseStyle = {
   flex: 1,
@@ -55,11 +56,26 @@ const rejectStyle = {
 
 const DropzoneField = ({ setFiles, files }) => {
   const onDrop = useCallback(acceptedFiles => {
+    //add validated property
     acceptedFiles.map(async file => {
       file.validated = false
     })
-    setFiles(prev => [...prev, ...acceptedFiles])
-  }, [setFiles])
+
+    //add file if it didnt already exists
+    setFiles(prev => {
+      let addedFiles = []
+      acceptedFiles.forEach(newFile => {
+        const fileExist = prev.some(file => file.name === newFile.name);
+        if (fileExist) {
+          toast.error(`${newFile.name} already exists`);
+        } else {
+          addedFiles.push(newFile)
+        }
+      });
+
+      return [...prev, ...addedFiles]
+    })
+  }, [setFiles, files])
   const {
     getRootProps,
     getInputProps,
