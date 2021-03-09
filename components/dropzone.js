@@ -56,11 +56,12 @@ const rejectStyle = {
 
 const DropzoneField = ({ setFiles, files }) => {
   const onDrop = useCallback(acceptedFiles => {
+    //add validated property
     acceptedFiles.map(async file => {
       file.validated = false
     })
 
-
+    //add file if it didnt already exists
     setFiles(prev => {
       let addedFiles = []
       acceptedFiles.forEach(newFile => {
