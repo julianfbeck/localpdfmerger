@@ -26,9 +26,9 @@ const DonationModal = ({ isOpen, onOpen, onClose }) => {
             </Text>
           </ModalBody>
             <VStack>
-              <DonationButton ammount={"5"} itemID="price_1IUx1FJ2iOysJZvP1LD3EzTR"></DonationButton>
-              <DonationButton ammount={"10"} itemID="price_1IUx1FJ2iOysJZvP1LD3EzTR"></DonationButton>
-              <DonationButton ammount={"20"} itemID="price_1IUx1FJ2iOysJZvP1LD3EzTR"></DonationButton>
+              <DonationButton ammount={"5.00"} itemID="price_1IUw15J2iOysJZvPPgJ1Cgk3"></DonationButton>
+              <DonationButton ammount={"10.00"} itemID="price_1IUxxiJ2iOysJZvPiUiePnWK"></DonationButton>
+              <DonationButton ammount={"20.00"} itemID="price_1IUxyVJ2iOysJZvPbW7oqAcz"></DonationButton>
 
             </VStack>
 

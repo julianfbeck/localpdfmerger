@@ -5,7 +5,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "@chakra-ui/react";
 
 const stripePromise = loadStripe(
-  "pk_test_51IUqMCJ2iOysJZvP3vrQpEoV2l1SpF9PzkycqVdKjmC3RYuDC3AqTvRfBDcsDwDmtxJlkUyip4GQOb8Akt0lF3O100RSHVPfch"
+  "pk_live_51IUqMCJ2iOysJZvP8AxPuY7Oflx4CA02El4scyZFHSjppcduMwGrO5sniEkrxu0sqTLTNtGJghy4JF60bfKjSCMd00dQHwGtrd"
 );
 
 const DonationButton = ({ itemID, ammount }) => {
