@@ -10,7 +10,8 @@ import {
   Center,
   Text,
   Spacer,
-  Fade
+  Fade,
+  useDisclosure
 } from '@chakra-ui/react'
 import toast, { Toaster } from 'react-hot-toast'
 import { BFSRequire, configure } from 'browserfs'
@@ -22,6 +23,7 @@ import DropzoneField from '../components/dropzone'
 import DragDrop from '../components/DragDrop'
 import { promisifyAll } from 'bluebird'
 import { createBreakpoints } from '@chakra-ui/theme-tools'
+import DonationModal from '../components/DonationModal'
 
 const path = require('path')
 let fs
@@ -38,6 +40,8 @@ const Merge = () => {
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = useState([])
   const [sorted, SetSorted] = useState(false)
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
 
   const init = useCallback(async () => {
     configure(
@@ -114,6 +118,7 @@ const Merge = () => {
     setIsMerging(true)
     await mergeOneByOne()
     setIsMerging(false)
+    onOpen()
   }
 
   const mergeOneByOne = async () => {
@@ -293,6 +298,7 @@ const Merge = () => {
           </Center>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
+          <DonationModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} ></DonationModal>
           <aside>
             <Fade in={files.length !== 0} reverse>
               <Stack spacing={8} m={3}>
