@@ -2,7 +2,10 @@
 // recreating the `Stripe` object on every render.
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import {Button} from '@chakra-ui/react'
+import {Button, useDisclosure} from '@chakra-ui/react'
+import DonationModal from "../components/DonationModal";
+
+
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(
@@ -10,6 +13,8 @@ const stripePromise = loadStripe(
 );
 
 export default function Stripe() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const handleClick = async (event) => {
     const stripe = await stripePromise;
     stripe
@@ -28,6 +33,8 @@ export default function Stripe() {
       });
   };
 
-  return <Button onClick={handleClick} >Test</Button>;
+  return (<><DonationModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} ></DonationModal>
+  <Button onClick={handleClick} >Test</Button>
+  </>);
 }
 
