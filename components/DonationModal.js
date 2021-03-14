@@ -5,32 +5,36 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Button
+
+  Button,
+  VStack,
+  Text
 } from "@chakra-ui/react";
-import { useEffect } from 'react'
+import { useEffect } from "react";
+import DonationButton from "./DonationButton";
 
-
-const DonationModal = ({isOpen,onOpen, onClose}) => {
-
-
-
-  
+const DonationModal = ({ isOpen, onOpen, onClose }) => {
   return (
     <>
-      <Button onClick={onOpen}>Support this site</Button>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Your file has been downloaded </ModalHeader>
           <ModalBody>
+            <Text fontWeight="bold" mb="1rem">
+            Support this site ❤️
+            </Text>
           </ModalBody>
+            <VStack>
+              <DonationButton ammount={"5"} itemID="price_1IUx1FJ2iOysJZvP1LD3EzTR"></DonationButton>
+              <DonationButton ammount={"10"} itemID="price_1IUx1FJ2iOysJZvP1LD3EzTR"></DonationButton>
+              <DonationButton ammount={"20"} itemID="price_1IUx1FJ2iOysJZvP1LD3EzTR"></DonationButton>
+
+            </VStack>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
+            <Button variant="outline"  mr={3} onClick={onClose}>
+            Don't support me
             </Button>
           </ModalFooter>
         </ModalContent>
