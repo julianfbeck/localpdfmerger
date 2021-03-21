@@ -72,8 +72,8 @@ const Extract = () => {
   };
 
   const selectedValues = async (target) => {
-    setMode(target)
-  } 
+    setMode(target);
+  };
   const startOptimizingFiles = async () => {
     gtag.event({
       action: "extract",
@@ -136,11 +136,51 @@ const Extract = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing || mode ==""}
+          disabled={isOptimizing || mode == ""}
           onClick={optimizeFiles}
         >
           Optimize Files
         </Button>
+      );
+    }
+  };
+  const modeText = () => {
+    if (mode == "") {
+      return (
+        <Text px={[1, 10, 15]} pb={6}>
+         Extract Information from your PDF file. You can extract the following from a PDF file: 
+         Images, Meta Infromation, content in Textformat, Fonts and Pages
+        </Text>
+      );
+    } else if (mode == "image") {
+      return (
+        <Text px={[1, 10, 15]} pb={6}>
+          Extract all images from your PDF files:
+        </Text>
+      );
+    } else if (mode == "meta") {
+      return (
+        <Text px={[1, 10, 15]} pb={6}>
+          Extract the Meta-Information of your PDF-file
+        </Text>
+      );
+    } else if (mode == "content") {
+      return (
+        <Text px={[1, 10, 15]} pb={6}>
+          Extract the Content of your PDF. This will download all Text of your PDF as a .txt File
+        </Text>
+      );
+    } else if (mode == "pages") {
+      return (
+        <Text px={[1, 10, 15]} pb={6}>
+          Extract all Pages from your PDF file
+        </Text>
+      );
+    } else if (mode == "font") {
+      return (
+        <Text px={[1, 10, 15]} pb={6}>
+          Extract all Fonts Formats from your PDF File
+        </Text>
       );
     }
   };
@@ -183,10 +223,7 @@ const Extract = () => {
               Extract Information From PDFs
             </Heading>
           </Center>
-          <Text px={[1, 10, 15]} pb={6}>
-            Get rid of redundant page resources like embedded fonts and images
-            and download the results with better PDF compression.
-          </Text>
+          {modeText()}
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
           <DonationModal
@@ -217,13 +254,20 @@ const Extract = () => {
             {files.length === 0 ? "" : "You can drag and drop files to sort"}
           </Text>
           <Flex row={2}>
-          <Container maxW="sm">
-            <Select onChange={(e) => selectedValues(e.target.value)} colorScheme="blue" placeholder="Select extract Mode" variant="outline">
-              <option value="image">Extract All Images</option>
-              <option value="meta">Extract Meta Information</option>
-              <option value="content">Extract Text</option>
-              <option value="pages">Extract all Pages</option>
-            </Select>
+            <Container maxW="sm">
+              <Select
+                onChange={(e) => selectedValues(e.target.value)}
+                colorScheme="blue"
+                placeholder="Select extract Mode"
+                variant="outline"
+              >
+                <option value="image">Extract All Images</option>
+                <option value="meta">Extract Meta Information</option>
+                <option value="content">Extract Text</option>
+                <option value="pages">Extract all Pages</option>
+                <option value="font">Extract all Font Types</option>
+
+              </Select>
             </Container>
             <Spacer />
             <LoadingButton></LoadingButton>
