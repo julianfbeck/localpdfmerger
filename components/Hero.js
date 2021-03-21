@@ -118,8 +118,7 @@ export default function Hero({
           </u>
         </Text>
       </Stack>
-      <Box w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
-        {/* TODO: Make this change every X secs */}
+      <Box  w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
         <Image
           src={image}
           size="100%"
