@@ -24,7 +24,6 @@ import DragDrop from '../components/DragDrop'
 import { promisifyAll } from 'bluebird'
 import { createBreakpoints } from '@chakra-ui/theme-tools'
 import DonationModal from '../components/DonationModal'
-
 const path = require('path')
 let fs
 let Buffer
@@ -122,6 +121,7 @@ const Optimize = () => {
   }
 
   const mergeOneByOne = async () => {
+    console.log(files[0])
     gtag.event({
       action: 'optimize',
     })
@@ -135,14 +135,14 @@ const Optimize = () => {
         id: toastId
       })
     }
-
+    let newFileName = files[0].name.replace(/\.[^/.]+$/, "")+"-optimized.pdf"
     let exitcode = await runWasm([
       'pdfcpu.wasm',
       'optimize',
       '-c',
       'disable',
       files[0].path,
-      '/merge.pdf',
+      newFileName
     ])
 
     if (exitcode !== 0) {
@@ -152,8 +152,8 @@ const Optimize = () => {
       return
     }
     await fs.unlinkAsync(files[0].path)
-      await downloadFile(`merge.pdf`)
-      await fs.unlinkAsync('./merge.pdf')
+      await downloadFile(newFileName)
+      await fs.unlinkAsync(newFileName)
       toast.success('Your File ist Ready!', {
         id: toastId
       })
@@ -185,7 +185,7 @@ const Optimize = () => {
           <Button
             colorScheme='blue'
             isLoading
-            disabled={files.length < 2 || isMerging}
+            disabled={isMerging}
             onClick={mergeFiles}
             variant='outline'
           >
@@ -198,7 +198,7 @@ const Optimize = () => {
         <Button
           colorScheme='blue'
           variant='outline'
-          disabled={files.length < 2 || isMerging}
+          disabled={isMerging}
           onClick={mergeFiles}
         >
           Merge
@@ -278,25 +278,6 @@ const Optimize = () => {
             {files.length === 0 ? '' : 'You can drag and drop files to sort'}
           </Text>
           <Flex row={2}>
-            {!sorted ? (
-              <Button
-                onClick={sortAlpabetically}
-                disabled={files.length < 2 || isMerging}
-                colorScheme='blue'
-                variant='outline'
-              >
-                Sort
-              </Button>
-            ) : (
-              <Button
-                onClick={sortAlpabetically}
-                disabled={files.length < 2 || isMerging}
-                colorScheme='blue'
-                variant='outline'
-              >
-                Sort A
-              </Button>
-            )}
             <Spacer />
             <LoadingButton></LoadingButton>
           </Flex>
