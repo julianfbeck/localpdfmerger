@@ -140,17 +140,17 @@ const Optimize = () => {
   return (
     <>
       <Head>
-        <title>Merge PDF Files - Combine multiple PDF Files into one</title>
+        <title>Optimize PDF Files -  Get rid of redundant page resources</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+          content="Get rid of redundant page resources like embedded fonts and images and download the results with better PDF compression."
         />
         <meta
           name="keywords"
-          content="Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu"
+          content="Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
         />
         <meta name="author" content="Julian Beck" />
       </Head>
