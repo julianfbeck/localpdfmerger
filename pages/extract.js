@@ -194,7 +194,8 @@ const Extract = () => {
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Get rid of redundant page resources like embedded fonts and images and download the results with better PDF compression."
+          content="Extract Information from your PDF file. You can extract the following from a PDF file: 
+          Images, Meta Infromation, content in Textformat, Fonts and Pages Extract all Pages from your PDF file"
         />
         <meta
           name="keywords"
