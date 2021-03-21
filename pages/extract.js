@@ -78,41 +78,43 @@ const Extract = () => {
     gtag.event({
       action: "extract",
     });
-    //merge first two files into merge.pdf
-    const toastId = toast.loading(`Loading File ${files[0].path}`);
-    try {
-      await readFileAsync(files[0], files, setFiles);
-    } catch (error) {
-      console.log(error);
-      toast.error("There was an error loading your PDFs", {
-        id: toastId,
-      });
-    }
-    await fs.mkdirAsync("./images");
+    for (let i in files) {
+      //merge first two files into merge.pdf
+      const toastId = toast.loading(`Loading File ${files[i].path}`);
+      try {
+        await readFileAsync(files[i], files, setFiles);
+      } catch (error) {
+        console.log(error);
+        toast.error("There was an error loading your PDFs", {
+          id: toastId,
+        });
+      }
+      await fs.mkdirAsync("./" + mode);
 
-    let exitcode = await runWasm([
-      "pdfcpu.wasm",
-      "extract",
-      "-m",
-      "image",
-      "-c",
-      "disable",
-      files[0].path,
-      "./images",
-    ]);
+      let exitcode = await runWasm([
+        "pdfcpu.wasm",
+        "extract",
+        "-m",
+        mode,
+        "-c",
+        "disable",
+        files[i].path,
+        "./" + mode,
+      ]);
 
-    if (exitcode !== 0) {
-      toast.error("There was an error optimizing your PDFs", {
-        id: toastId,
-      });
-      return;
+      if (exitcode !== 0) {
+        toast.error("There was an error optimizing your PDFs", {
+          id: toastId,
+        });
+        return;
+      }
+      await fs.unlinkAsync(files[i].path);
+      await downloadAndZipFolder(fs, mode, files[i].name);
+
     }
-    await fs.unlinkAsync(files[0].path);
-    await downloadAndZipFolder(fs, "./images", "images");
-    toast.success("Your File ist Ready!", {
+    toast.success("Your File(s) ist Ready!", {
       id: toastId,
     });
-
     setFiles([]);
     return;
   };
@@ -189,7 +191,9 @@ const Extract = () => {
   return (
     <>
       <Head>
-        <title>Extract Information - Extract Images, Content and more from PDF files</title>
+        <title>
+          Extract Information - Extract Images, Content and more from PDF files
+        </title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
@@ -267,7 +271,7 @@ const Extract = () => {
                 <option value="image">Extract All Images</option>
                 <option value="meta">Extract Meta Information</option>
                 <option value="content">Extract Text</option>
-                <option value="pages">Extract all Pages</option>
+                <option value="page">Extract all Pages</option>
                 <option value="font">Extract all Font Types</option>
               </Select>
             </Container>
