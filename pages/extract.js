@@ -127,7 +127,7 @@ const Extract = () => {
             disabled={isOptimizing}
             variant="outline"
           >
-            Optimize Files
+            Extract
           </Button>
         </>
       );
@@ -139,7 +139,7 @@ const Extract = () => {
           disabled={isOptimizing || mode == ""}
           onClick={optimizeFiles}
         >
-          Optimize Files
+          Extract
         </Button>
       );
     }
@@ -194,8 +194,8 @@ const Extract = () => {
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Extract Information from your PDF file. You can extract the following from a PDF file: 
-          Images, Meta Infromation, content in Textformat, Fonts and Pages Extract all Pages from your PDF file"
+          content="Extract Information from your PDF file. You can extract 
+          Images, Meta Infromation, content in Textformat, Fonts and Pages from your PDF file"
         />
         <meta
           name="keywords"
@@ -207,6 +207,7 @@ const Extract = () => {
         <Box
           p={8}
           maxWidth={["100%", "95%", "70%", "50%"]}
+          width={["100%", "95%", "70%", "50%"]}
           borderWidth={1}
           borderRadius={8}
           boxShadow="lg"
@@ -221,7 +222,7 @@ const Extract = () => {
               textAlign={["center", "center", "left", "left"]}
               pb={2}
             >
-              Extract Information From PDFs
+              Extract Information
             </Heading>
           </Center>
           {modeText()}
