@@ -13,11 +13,12 @@ export default function Home () {
         <meta name='theme-color' content='#000000' />
         <meta
           name='description'
-          content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be sent to another server!"
+          content="Merge multiple PDFs into one. Get rid of redundant page resources like embedded fonts and images
+          and download the results with better PDF compression. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be sent to another server!"
         />
         <meta
           name='keywords'
-          content='Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu'
+          content='Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, optimize, locally, '
         />
        <meta name='author' content='Julian Beck' />
        <meta name="twitter:card" content="summary_large_image" />
@@ -30,10 +31,12 @@ export default function Home () {
         <Hero
           title='Local PDF Tools'
           subtitle="Local PDF uses Webassembly to edit your PDFs inside your Browser. Your files won't leave your System, they will not be sent to another server"
-          subtitle2='Currently, we support merging PDFs. You can combine multiple PDF files into one large File.'
+          subtitle2='Currently, we support merging and optimizing PDFs.'
           image='/files.svg'
-          ctaText='Start Merging PDFs'
-          ctaLink='/merge'
+          ctaText1='Start Merging PDFs'
+          ctaLink1='/merge'
+          ctaText2='Start Optimizing PDFs'
+          ctaLink2='/optimize'
         />
       </LandingLayout>
     </>
