@@ -61,48 +61,50 @@ const Optimize = () => {
 
   const optimizeFiles = async () => {
     setIsOptimizing(true);
-    await mergeOneByOne();
+    await startOptimizingFiles();
     setIsOptimizing(false);
     onOpen();
   };
 
-  const mergeOneByOne = async () => {
-    console.log(files[0]);
-    gtag.event({
-      action: "optimize",
-    });
-    //merge first two files into merge.pdf
-    const toastId = toast.loading(`Loading File ${files[0].path}`);
-    try {
-      await readFileAsync(files[0], files, setFiles);
-    } catch (error) {
-      console.log(error);
-      toast.error("There was an error loading your PDFs", {
-        id: toastId,
+  const startOptimizingFiles = async () => {
+    for (let i in files) {
+      gtag.event({
+        action: "optimize",
       });
-    }
-    let newFileName = files[0].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
-    let exitcode = await runWasm([
-      "pdfcpu.wasm",
-      "optimize",
-      "-c",
-      "disable",
-      files[0].path,
-      newFileName,
-    ]);
+      //merge first two files into merge.pdf
+      const toastId = toast.loading(`Loading File ${files[i ].path}`);
+      try {
+        await readFileAsync(files[i], files, setFiles);
+      } catch (error) {
+        console.log(error);
+        toast.error("There was an error loading your PDFs", {
+          id: toastId,
+        });
+      }
+      let newFileName =
+        files[i].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
+      let exitcode = await runWasm([
+        "pdfcpu.wasm",
+        "optimize",
+        "-c",
+        "disable",
+        files[i].path,
+        newFileName,
+      ]);
 
-    if (exitcode !== 0) {
-      toast.error("There was an error merging your PDFs", {
+      if (exitcode !== 0) {
+        toast.error("There was an error optimizing your PDFs", {
+          id: toastId,
+        });
+        return;
+      }
+      await fs.unlinkAsync(files[i].path);
+      await downloadFile(fs, newFileName);
+      await fs.unlinkAsync(newFileName);
+      toast.success("Your File ist Ready!", {
         id: toastId,
       });
-      return;
     }
-    await fs.unlinkAsync(files[0].path);
-    await downloadFile(fs, newFileName);
-    await fs.unlinkAsync(newFileName);
-    toast.success("Your File ist Ready!", {
-      id: toastId,
-    });
     setFiles([]);
     return;
   };
