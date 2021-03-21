@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
-import download from "downloadjs";
 import {
   Button,
   Stack,
@@ -17,29 +16,18 @@ import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
 import dynamic from "next/dynamic";
 import * as gtag from "../scripts/gtag";
-
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-const path = require("path");
-const jszip = require("jszip");
-
+import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
 let fs;
 let Buffer;
-const test = dynamic(import("../scripts/wasm_exec"));
-const breakpoints = createBreakpoints({
-  sm: "30em",
-  md: "48em",
-  lg: "62em",
-  xl: "80em",
-  "2xl": "96em",
-});
+
 const Optimize = () => {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [files, setFiles] = useState([]);
-  const [sorted, SetSorted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const init = useCallback(async () => {
@@ -71,48 +59,6 @@ const Optimize = () => {
     init();
   }, [init]);
 
-  const downloadFile = async (file) => {
-    let data = await fs.readFileAsync(file);
-    download(new Blob([data]), file);
-  };
-
-  const readFileAsync = (file) => {
-    return new Promise((resolve, reject) => {
-      console.log(`Writing ${file.name} to disk`);
-      if (file.isLoaded) return resolve();
-
-      let reader = new FileReader();
-      reader.fileName = file.name;
-
-      reader.onload = async (e) => {
-        let data = e.target.result.slice();
-        await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data));
-        let exitCode = await runWasm([
-          "pdfcpu.wasm",
-          "validate",
-          "-c",
-          "disable",
-          `/${e.target.fileName}`,
-        ]);
-
-        if (exitCode !== 0) return reject();
-        let updatedFile = files.map((file) => {
-          if (file.name === path.basename(e.target.fileName)) {
-            file.validated = true;
-            file.isLoaded = true;
-          }
-          return file;
-        });
-        setFiles(updatedFile);
-        resolve(reader.result);
-      };
-
-      reader.onerror = reject;
-
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
   const optimizeFiles = async () => {
     setIsOptimizing(true);
     await mergeOneByOne();
@@ -128,7 +74,7 @@ const Optimize = () => {
     //merge first two files into merge.pdf
     const toastId = toast.loading(`Loading File ${files[0].path}`);
     try {
-      await readFileAsync(files[0]);
+      await readFileAsync(files[0], files, setFiles);
     } catch (error) {
       console.log(error);
       toast.error("There was an error loading your PDFs", {
@@ -152,29 +98,13 @@ const Optimize = () => {
       return;
     }
     await fs.unlinkAsync(files[0].path);
-    await downloadFile(newFileName);
+    await downloadFile(fs, newFileName);
     await fs.unlinkAsync(newFileName);
     toast.success("Your File ist Ready!", {
       id: toastId,
     });
     setFiles([]);
     return;
-  };
-
-  const runWasm = async (param) => {
-    if (window.cachedWasmResponse === undefined) {
-      const response = await fetch("pdfcpu.wasm");
-      const buffer = await response.arrayBuffer();
-      window.cachedWasmResponse = buffer;
-      global.go = new Go();
-    }
-    const { instance } = await WebAssembly.instantiate(
-      window.cachedWasmResponse,
-      window.go.importObject
-    );
-    window.go.argv = param;
-    await window.go.run(instance);
-    return window.go.exitCode;
   };
 
   const LoadingButton = () => {
@@ -225,7 +155,7 @@ const Optimize = () => {
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
-          maxWidth={["100%", "95%","70%", "50%"]}
+          maxWidth={["100%", "95%", "70%", "50%"]}
           borderWidth={1}
           borderRadius={8}
           boxShadow="lg"
@@ -244,8 +174,8 @@ const Optimize = () => {
             </Heading>
           </Center>
           <Text px={[1, 10, 15]} pb={6}>
-            Get rid of redundant page resources like embedded fonts and
-            images and download the results with better PDF compression.
+            Get rid of redundant page resources like embedded fonts and images
+            and download the results with better PDF compression.
           </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />

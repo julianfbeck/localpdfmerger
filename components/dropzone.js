@@ -98,7 +98,7 @@ const DropzoneField = ({ setFiles, files }) => {
     <div className='container'>
       <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
-        <p>Drag 'n' drop PDF files here, or click to select files to merge</p>
+        <p>Drag 'n' drop PDF files here, or click to select files</p>
       </div>
     </div>
   )
