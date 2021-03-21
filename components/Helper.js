@@ -44,25 +44,24 @@ export const readFileAsync = (file, files, setFiles) => {
   });
 };
 
-export const downloadAndZipFolder = async (fs, folderPath, outputName) => {
-  let files = await fs.readdirAsync("./images");
+export const downloadAndZipFolder = async (fs, mode) => {
+  let files = await fs.readdirAsync("./" + mode);
   files = files.map((filename) => {
-    return path.join(folderPath, filename);
+    return path.join("./" + mode, filename);
   });
 
   let zip = new JSZip();
   for (let filePath of files) {
     let data = await fs.readFileAsync(filePath);
+    await fs.unlinkAsync(filePath);
     zip.file(filePath, data);
   }
 
   zip.generateAsync({ type: "blob" }).then(function (blob) {
-    download(new Blob([blob]), outputName+".zip");
+    download(new Blob([blob]), mode + ".zip");
   });
-  for (let filePath of files) {
-    await fs.unlinkAsync(filePath);
-  }
-  await fs.rmdirAsync(folderPath);
+
+  await fs.rmdirAsync("./" + mode);
 };
 
 export const runWasm = async (param) => {

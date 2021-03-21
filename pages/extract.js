@@ -189,7 +189,7 @@ const Extract = () => {
   return (
     <>
       <Head>
-        <title>Optimize PDF Files - Get rid of redundant page resources</title>
+        <title>Extract Information - Extract Images, Content and more from PDF files</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
