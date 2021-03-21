@@ -44,7 +44,7 @@ export const readFileAsync = (file, files, setFiles) => {
   });
 };
 
-export const downloadAndZipFolder = async (fs, mode) => {
+export const downloadAndZipFolder = async (fs, mode, downloadName) => {
   let files = await fs.readdirAsync("./" + mode);
   files = files.map((filename) => {
     return path.join("./" + mode, filename);
@@ -58,7 +58,7 @@ export const downloadAndZipFolder = async (fs, mode) => {
   }
 
   zip.generateAsync({ type: "blob" }).then(function (blob) {
-    download(new Blob([blob]), mode + ".zip");
+    download(new Blob([blob]), downloadName + ".zip");
   });
 
   await fs.rmdirAsync("./" + mode);
