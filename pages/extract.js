@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
-import download from "downloadjs";
 import {
   Button,
   Stack,
@@ -15,32 +14,23 @@ import {
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
-import dynamic from "next/dynamic";
 import * as gtag from "../scripts/gtag";
-
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
-import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-const path = require("path");
-//const zip = require("@zip.js/zip.js");
-const jszip = require("jszip")
-
+import {
+  downloadFile,
+  readFileAsync,
+  runWasm,
+  downloadAndZipFolder,
+} from "../components/Helper";
 let fs;
 let Buffer;
-const test = dynamic(import("../scripts/wasm_exec"));
-const breakpoints = createBreakpoints({
-  sm: "30em",
-  md: "48em",
-  lg: "62em",
-  xl: "80em",
-  "2xl": "96em",
-});
-const Optimize = () => {
-  const [isMerging, setIsMerging] = useState(false);
+
+const Extract = () => {
+  const [isOptimizing, setIsOptimizing] = useState(false);
   const [files, setFiles] = useState([]);
-  const [sorted, SetSorted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const init = useCallback(async () => {
@@ -72,124 +62,69 @@ const Optimize = () => {
     init();
   }, [init]);
 
-  const downloadFile = async (file) => {
-    let data = await fs.readFileAsync(file);
-    download(new Blob([data]), file);
-  };
-
-  const readFileAsync = (file) => {
-    return new Promise((resolve, reject) => {
-      console.log(`Writing ${file.name} to disk`);
-      if (file.isLoaded) return resolve();
-
-      let reader = new FileReader();
-      reader.fileName = file.name;
-
-      reader.onload = async (e) => {
-        let data = e.target.result.slice();
-        await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data));
-        let exitCode = await runWasm([
-          "pdfcpu.wasm",
-          "validate",
-          "-c",
-          "disable",
-          `/${e.target.fileName}`,
-        ]);
-
-        if (exitCode !== 0) return reject();
-        let updatedFile = files.map((file) => {
-          if (file.name === path.basename(e.target.fileName)) {
-            file.validated = true;
-            file.isLoaded = true;
-          }
-          return file;
-        });
-        setFiles(updatedFile);
-        resolve(reader.result);
-      };
-
-      reader.onerror = reject;
-
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
-  const mergeFiles = async () => {
-    setIsMerging(true);
-    await mergeOneByOne();
-    setIsMerging(false);
+  const optimizeFiles = async () => {
+    await downloadAndZipFolder(fs, "./images", "images");
+    return;
+    setIsOptimizing(true);
+    await startOptimizingFiles();
+    setIsOptimizing(false);
     onOpen();
   };
 
-  const mergeOneByOne = async () => {
-    console.log(files[0]);
-    gtag.event({
-      action: "optimize",
-    });
-    //merge first two files into merge.pdf
-    const toastId = toast.loading(`Loading File ${files[0].path}`);
-    try {
-      await readFileAsync(files[0]);
-    } catch (error) {
-      console.log(error);
-      toast.error("There was an error loading your PDFs", {
-        id: toastId,
+  const startOptimizingFiles = async () => {
+    for (let i in files) {
+      gtag.event({
+        action: "optimize",
       });
-    }
-    let newFileName = files[0].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
-    let exitcode = await runWasm([
-      "pdfcpu.wasm",
-      "optimize",
-      "-c",
-      "disable",
-      files[0].path,
-      newFileName,
-    ]);
+      //merge first two files into merge.pdf
+      const toastId = toast.loading(`Loading File ${files[i].path}`);
+      try {
+        await readFileAsync(files[i], files, setFiles);
+      } catch (error) {
+        console.log(error);
+        toast.error("There was an error loading your PDFs", {
+          id: toastId,
+        });
+      }
+      let newFileName =
+        files[i].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
+      let exitcode = await runWasm([
+        "pdfcpu.wasm",
+        "optimize",
+        "-c",
+        "disable",
+        files[i].path,
+        newFileName,
+      ]);
 
-    if (exitcode !== 0) {
-      toast.error("There was an error merging your PDFs", {
+      if (exitcode !== 0) {
+        toast.error("There was an error optimizing your PDFs", {
+          id: toastId,
+        });
+        return;
+      }
+      await fs.unlinkAsync(files[i].path);
+      await downloadFile(fs, newFileName);
+      await fs.unlinkAsync(newFileName);
+      toast.success("Your File ist Ready!", {
         id: toastId,
       });
-      return;
     }
-    await fs.unlinkAsync(files[0].path);
-    await downloadFile(newFileName);
-    await fs.unlinkAsync(newFileName);
-    toast.success("Your File ist Ready!", {
-      id: toastId,
-    });
     setFiles([]);
     return;
   };
 
-  const runWasm = async (param) => {
-    if (window.cachedWasmResponse === undefined) {
-      const response = await fetch("pdfcpu.wasm");
-      const buffer = await response.arrayBuffer();
-      window.cachedWasmResponse = buffer;
-      global.go = new Go();
-    }
-    const { instance } = await WebAssembly.instantiate(
-      window.cachedWasmResponse,
-      window.go.importObject
-    );
-    window.go.argv = param;
-    await window.go.run(instance);
-    return window.go.exitCode;
-  };
-
   const LoadingButton = () => {
-    if (isMerging) {
+    if (isOptimizing) {
       return (
         <>
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isMerging}
-            onClick={mergeFiles}
+            disabled={isOptimizing}
             variant="outline"
           >
-            Merge
+            Optimize Files
           </Button>
         </>
       );
@@ -198,49 +133,36 @@ const Optimize = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isMerging}
-          onClick={mergeFiles}
+          disabled={isOptimizing}
+          onClick={optimizeFiles}
         >
-          Merge
+          Optimize Files
         </Button>
       );
     }
   };
-  const test = async () => {
-    fs.mkdirSync("./images");
-    fs.appendFileSync("./images/mynewfile1.txt", "Hello content!");
-    fs.appendFileSync("./images/mynewfile2.txt", "Hello content!");
-    let data = await fs.readFileAsync("./images/mynewfile2.txt")
-    var zip = new jszip();
-    zip.file("test.txt",data)
-    zip.generateAsync({ type: "blob" }).then(function (blob) {
-      download(new Blob([blob]), "test.zip")
-    });
 
-    // let data = await fs.readFileAsync(file)
-    // download(new Blob([data]), file)
-  };
   return (
     <>
       <Head>
-        <title>Merge PDF Files - Combine multiple PDF Files into one</title>
+        <title>Optimize PDF Files - Get rid of redundant page resources</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
+          content="Get rid of redundant page resources like embedded fonts and images and download the results with better PDF compression."
         />
         <meta
           name="keywords"
-          content="Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu"
+          content="Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
         />
         <meta name="author" content="Julian Beck" />
       </Head>
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
-          maxWidth={["100%", "95%", "80%"]}
+          maxWidth={["100%", "95%", "70%", "50%"]}
           borderWidth={1}
           borderRadius={8}
           boxShadow="lg"
@@ -255,9 +177,13 @@ const Optimize = () => {
               textAlign={["center", "center", "left", "left"]}
               pb={2}
             >
-              Merge PDFs
+              Optimize PDFs
             </Heading>
           </Center>
+          <Text px={[1, 10, 15]} pb={6}>
+            Get rid of redundant page resources like embedded fonts and images
+            and download the results with better PDF compression.
+          </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
           <DonationModal
@@ -272,7 +198,7 @@ const Optimize = () => {
                   <DragDrop
                     setState={setFiles}
                     state={files}
-                    isMerging={isMerging}
+                    isMerging={isOptimizing}
                   ></DragDrop>
                 </div>
               </Stack>
@@ -288,7 +214,6 @@ const Optimize = () => {
             {files.length === 0 ? "" : "You can drag and drop files to sort"}
           </Text>
           <Flex row={2}>
-            <Button onClick={() => test()}></Button>
             <Spacer />
             <LoadingButton></LoadingButton>
           </Flex>
@@ -298,4 +223,4 @@ const Optimize = () => {
   );
 };
 
-export default Optimize;
+export default Extract;

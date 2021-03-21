@@ -28,14 +28,6 @@ import DonationModal from '../components/DonationModal'
 const path = require('path')
 let fs
 let Buffer
-const test = dynamic(import('../scripts/wasm_exec'))
-const breakpoints = createBreakpoints({
-  sm: '30em',
-  md: '48em',
-  lg: '62em',
-  xl: '80em',
-  '2xl': '96em'
-})
 const Merge = () => {
   const [isMerging, setIsMerging] = useState(false)
   const [files, setFiles] = useState([])

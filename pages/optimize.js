@@ -21,7 +21,7 @@ import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import { downloadAndZipFolder, downloadFile, readFileAsync, runWasm } from "../components/Helper";
 let fs;
 let Buffer;
 
