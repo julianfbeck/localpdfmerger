@@ -37,7 +37,7 @@ const breakpoints = createBreakpoints({
   "2xl": "96em",
 });
 const Optimize = () => {
-  const [isMerging, setIsMerging] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
   const [files, setFiles] = useState([]);
   const [sorted, SetSorted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -113,10 +113,10 @@ const Optimize = () => {
     });
   };
 
-  const mergeFiles = async () => {
-    setIsMerging(true);
+  const optimizeFiles = async () => {
+    setIsOptimizing(true);
     await mergeOneByOne();
-    setIsMerging(false);
+    setIsOptimizing(false);
     onOpen();
   };
 
@@ -178,17 +178,16 @@ const Optimize = () => {
   };
 
   const LoadingButton = () => {
-    if (isMerging) {
+    if (isOptimizing) {
       return (
         <>
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isMerging}
-            onClick={mergeFiles}
+            disabled={isOptimizing}
             variant="outline"
           >
-            Merge
+            Optimize Files
           </Button>
         </>
       );
@@ -197,10 +196,10 @@ const Optimize = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isMerging}
-          onClick={mergeFiles}
+          disabled={isOptimizing}
+          onClick={optimizeFiles}
         >
-          Merge
+          Optimize Files
         </Button>
       );
     }
@@ -226,7 +225,7 @@ const Optimize = () => {
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
-          maxWidth={["100%", "95%", "70%"]}
+          maxWidth={["100%", "95%","70%", "50%"]}
           borderWidth={1}
           borderRadius={8}
           boxShadow="lg"
@@ -244,10 +243,9 @@ const Optimize = () => {
               Optimize PDFs
             </Heading>
           </Center>
-          <Text pb={4}>
-            getting rid of redundant page resources like embedded fonts and
-            images and write the result to outFile maxing out PDF compression.
-            Have a look at some examples.
+          <Text px={[1, 10, 15]} pb={6}>
+            Get rid of redundant page resources like embedded fonts and
+            images and download the results with better PDF compression.
           </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
@@ -263,7 +261,7 @@ const Optimize = () => {
                   <DragDrop
                     setState={setFiles}
                     state={files}
-                    isMerging={isMerging}
+                    isMerging={isOptimizing}
                   ></DragDrop>
                 </div>
               </Stack>
