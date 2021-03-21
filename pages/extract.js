@@ -261,7 +261,7 @@ const Extract = () => {
               <Select
                 onChange={(e) => selectedValues(e.target.value)}
                 colorScheme="blue"
-                placeholder="Select extract Mode"
+                placeholder="Select Information to Extract"
                 variant="outline"
               >
                 <option value="image">Extract All Images</option>
