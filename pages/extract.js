@@ -148,8 +148,8 @@ const Extract = () => {
     if (mode == "") {
       return (
         <Text px={[1, 10, 15]} pb={6}>
-         Extract Information from your PDF file. You can extract the following from a PDF file: 
-         Images, Meta Infromation, content in Textformat, Fonts and Pages
+          Extract Information from your PDF file. You can extract Images, Meta
+          Infromation, Text, Fonts and Pages from your PDF file
         </Text>
       );
     } else if (mode == "image") {
@@ -167,7 +167,8 @@ const Extract = () => {
     } else if (mode == "content") {
       return (
         <Text px={[1, 10, 15]} pb={6}>
-          Extract the Content of your PDF. This will download all Text of your PDF as a .txt File
+          Extract the Content of your PDF. This will download all Text of your
+          PDF as a .txt File
         </Text>
       );
     } else if (mode == "pages") {
@@ -268,7 +269,6 @@ const Extract = () => {
                 <option value="content">Extract Text</option>
                 <option value="pages">Extract all Pages</option>
                 <option value="font">Extract all Font Types</option>
-
               </Select>
             </Container>
             <Spacer />
