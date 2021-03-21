@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import Head from "next/head";
 import {
   Button,
@@ -11,6 +11,8 @@ import {
   Spacer,
   Fade,
   useDisclosure,
+  Select,
+  Container,
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
@@ -32,7 +34,7 @@ const Extract = () => {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [files, setFiles] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [mode, setMode] = useState("");
   const init = useCallback(async () => {
     configure(
       {
@@ -69,45 +71,48 @@ const Extract = () => {
     onOpen();
   };
 
+  const selectedValues = async (target) => {
+    setMode(target)
+  } 
   const startOptimizingFiles = async () => {
-      gtag.event({
-        action: "extract",
-      });
-      //merge first two files into merge.pdf
-      const toastId = toast.loading(`Loading File ${files[0].path}`);
-      try {
-        await readFileAsync(files[0], files, setFiles);
-      } catch (error) {
-        console.log(error);
-        toast.error("There was an error loading your PDFs", {
-          id: toastId,
-        });
-      }
-      await fs.mkdirAsync("./images");
-
-      let exitcode = await runWasm([
-        "pdfcpu.wasm",
-        "extract",
-        "-m",
-        "image",
-        "-c",
-        "disable",
-        files[0].path,
-        "./images",
-      ]);
-
-      if (exitcode !== 0) {
-        toast.error("There was an error optimizing your PDFs", {
-          id: toastId,
-        });
-        return;
-      }
-      await fs.unlinkAsync(files[0].path);
-      await downloadAndZipFolder(fs,"./images","images")
-      toast.success("Your File ist Ready!", {
+    gtag.event({
+      action: "extract",
+    });
+    //merge first two files into merge.pdf
+    const toastId = toast.loading(`Loading File ${files[0].path}`);
+    try {
+      await readFileAsync(files[0], files, setFiles);
+    } catch (error) {
+      console.log(error);
+      toast.error("There was an error loading your PDFs", {
         id: toastId,
       });
-    
+    }
+    await fs.mkdirAsync("./images");
+
+    let exitcode = await runWasm([
+      "pdfcpu.wasm",
+      "extract",
+      "-m",
+      "image",
+      "-c",
+      "disable",
+      files[0].path,
+      "./images",
+    ]);
+
+    if (exitcode !== 0) {
+      toast.error("There was an error optimizing your PDFs", {
+        id: toastId,
+      });
+      return;
+    }
+    await fs.unlinkAsync(files[0].path);
+    await downloadAndZipFolder(fs, "./images", "images");
+    toast.success("Your File ist Ready!", {
+      id: toastId,
+    });
+
     setFiles([]);
     return;
   };
@@ -131,7 +136,7 @@ const Extract = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing}
+          disabled={isOptimizing || mode ==""}
           onClick={optimizeFiles}
         >
           Optimize Files
@@ -212,6 +217,14 @@ const Extract = () => {
             {files.length === 0 ? "" : "You can drag and drop files to sort"}
           </Text>
           <Flex row={2}>
+          <Container maxW="sm">
+            <Select onChange={(e) => selectedValues(e.target.value)} colorScheme="blue" placeholder="Select extract Mode" variant="outline">
+              <option value="image">Extract All Images</option>
+              <option value="meta">Extract Meta Information</option>
+              <option value="content">Extract Text</option>
+              <option value="pages">Extract all Pages</option>
+            </Select>
+            </Container>
             <Spacer />
             <LoadingButton></LoadingButton>
           </Flex>
