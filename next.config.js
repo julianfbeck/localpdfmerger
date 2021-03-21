@@ -5,3 +5,9 @@ sitemap({
   targetDirectory : 'public/' ,
   ignoreIndexFiles : true
 });
+module.exports = {
+  experimental: {
+    optimizeFonts: true,
+    optimizeImages: true
+  }
+}

@@ -21,7 +21,7 @@ import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import { downloadAndZipFolder, downloadFile, readFileAsync, runWasm } from "../components/Helper";
 let fs;
 let Buffer;
 
@@ -116,7 +116,7 @@ const Optimize = () => {
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isOptimizing}
+            disabled={isOptimizing || files.length >= 0}
             variant="outline"
           >
             Optimize Files
@@ -128,7 +128,7 @@ const Optimize = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing}
+          disabled={isOptimizing || files.length >= 0}
           onClick={optimizeFiles}
         >
           Optimize Files

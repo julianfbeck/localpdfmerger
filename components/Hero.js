@@ -18,8 +18,10 @@ export default function Hero({
   image,
   ctaLink1,
   ctaLink2,
+  ctaLink3,
   ctaText1,
   ctaText2,
+  ctaText3,
   ...rest
 }) {
   return (
@@ -78,6 +80,11 @@ export default function Hero({
             {ctaText2}
           </Button>
         </Link>
+        <Link href={ctaLink3}>
+          <Button borderRadius="8px" py="4" px="4" lineHeight="1" size="md">
+            {ctaText3}
+          </Button>
+        </Link>
         <Text
           fontSize="xs"
           mt={2}
@@ -111,8 +118,7 @@ export default function Hero({
           </u>
         </Text>
       </Stack>
-      <Box w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
-        {/* TODO: Make this change every X secs */}
+      <Box  w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
         <Image
           src={image}
           size="100%"
