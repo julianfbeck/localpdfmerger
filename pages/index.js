@@ -32,8 +32,10 @@ export default function Home () {
           subtitle="Local PDF uses Webassembly to edit your PDFs inside your Browser. Your files won't leave your System, they will not be sent to another server"
           subtitle2='Currently, we support merging PDFs. You can combine multiple PDF files into one large File.'
           image='/files.svg'
-          ctaText='Start Merging PDFs'
-          ctaLink='/merge'
+          ctaText1='Start Merging PDFs'
+          ctaLink1='/merge'
+          ctaText2='Start Optimizing PDFs'
+          ctaLink2='/optimize'
         />
       </LandingLayout>
     </>

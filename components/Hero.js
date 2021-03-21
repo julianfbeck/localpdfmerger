@@ -16,8 +16,10 @@ export default function Hero({
   subtitle,
   subtitle2,
   image,
-  ctaLink,
-  ctaText,
+  ctaLink1,
+  ctaLink2,
+  ctaText1,
+  ctaText2,
   ...rest
 }) {
   return (
@@ -66,21 +68,16 @@ export default function Hero({
         >
           {subtitle2}
         </Heading>
-        <Link href={ctaLink}>
+        <Link href={ctaLink1}>
           <Button borderRadius="8px" py="4" px="4" lineHeight="1" size="md">
-            {ctaText}
+            {ctaText1}
           </Button>
         </Link>
-        <Button
-          borderRadius="8px"
-          py="4"
-          px="4"
-          lineHeight="1"
-          size="md"
-          disabled={true}
-        >
-          More Coming soon
-        </Button>
+        <Link href={ctaLink2}>
+          <Button borderRadius="8px" py="4" px="4" lineHeight="1" size="md">
+            {ctaText2}
+          </Button>
+        </Link>
         <Text
           fontSize="xs"
           mt={2}
@@ -127,20 +124,3 @@ export default function Hero({
     </Flex>
   );
 }
-
-Hero.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  image: PropTypes.string,
-  ctaText: PropTypes.string,
-  ctaLink: PropTypes.string,
-};
-
-Hero.defaultProps = {
-  title: "React landing page with Chakra UI",
-  subtitle:
-    "This is the subheader section where you describe the basic benefits of your product",
-  image: "https://source.unsplash.com/collection/404339/800x600",
-  ctaText: "Create your account now",
-  ctaLink: "/signup",
-};
