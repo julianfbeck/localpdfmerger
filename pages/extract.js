@@ -63,8 +63,6 @@ const Extract = () => {
   }, [init]);
 
   const optimizeFiles = async () => {
-    await downloadAndZipFolder(fs, "./images", "images");
-    return;
     setIsOptimizing(true);
     await startOptimizingFiles();
     setIsOptimizing(false);
@@ -72,29 +70,30 @@ const Extract = () => {
   };
 
   const startOptimizingFiles = async () => {
-    for (let i in files) {
       gtag.event({
-        action: "optimize",
+        action: "extract",
       });
       //merge first two files into merge.pdf
-      const toastId = toast.loading(`Loading File ${files[i].path}`);
+      const toastId = toast.loading(`Loading File ${files[0].path}`);
       try {
-        await readFileAsync(files[i], files, setFiles);
+        await readFileAsync(files[0], files, setFiles);
       } catch (error) {
         console.log(error);
         toast.error("There was an error loading your PDFs", {
           id: toastId,
         });
       }
-      let newFileName =
-        files[i].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
+      await fs.mkdirAsync("./images");
+
       let exitcode = await runWasm([
         "pdfcpu.wasm",
-        "optimize",
+        "extract",
+        "-m",
+        "image",
         "-c",
         "disable",
-        files[i].path,
-        newFileName,
+        files[0].path,
+        "./images",
       ]);
 
       if (exitcode !== 0) {
@@ -103,13 +102,12 @@ const Extract = () => {
         });
         return;
       }
-      await fs.unlinkAsync(files[i].path);
-      await downloadFile(fs, newFileName);
-      await fs.unlinkAsync(newFileName);
+      await fs.unlinkAsync(files[0].path);
+      await downloadAndZipFolder(fs,"./images","images")
       toast.success("Your File ist Ready!", {
         id: toastId,
       });
-    }
+    
     setFiles([]);
     return;
   };

@@ -45,10 +45,6 @@ export const readFileAsync = (file, files, setFiles) => {
 };
 
 export const downloadAndZipFolder = async (fs, folderPath, outputName) => {
-  fs.mkdirSync("./images");
-  fs.appendFileSync("./images/mynewfile1.txt", "Hello content!");
-  fs.appendFileSync("./images/mynewfile2.txt", "Hello content!");
-
   let files = await fs.readdirAsync("./images");
   files = files.map((filename) => {
     return path.join(folderPath, filename);
@@ -63,7 +59,6 @@ export const downloadAndZipFolder = async (fs, folderPath, outputName) => {
   zip.generateAsync({ type: "blob" }).then(function (blob) {
     download(new Blob([blob]), outputName+".zip");
   });
-  console.log(fs)
   for (let filePath of files) {
     await fs.unlinkAsync(filePath);
   }
