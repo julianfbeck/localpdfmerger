@@ -25,6 +25,8 @@ import { promisifyAll } from 'bluebird'
 import { createBreakpoints } from '@chakra-ui/theme-tools'
 import DonationModal from '../components/DonationModal'
 const path = require('path')
+const jszip = require("jszip")
+
 let fs
 let Buffer
 const test = dynamic(import('../scripts/wasm_exec'))
