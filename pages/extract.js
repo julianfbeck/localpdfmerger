@@ -180,7 +180,7 @@ const Extract = () => {
               textAlign={["center", "center", "left", "left"]}
               pb={2}
             >
-              Optimize PDFs
+              Extract Information From PDFs
             </Heading>
           </Center>
           <Text px={[1, 10, 15]} pb={6}>
