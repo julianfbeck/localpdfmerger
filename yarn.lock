@@ -871,6 +871,11 @@
   resolved "https://registry.npmjs.org/@types/warning/-/warning-3.0.0.tgz"
   integrity sha1-DSUBJorY+ZYrdA04fEZU9fjiPlI=
 
+"@zip.js/zip.js@^2.2.23":
+  version "2.2.23"
+  resolved "https://registry.yarnpkg.com/@zip.js/zip.js/-/zip.js-2.2.23.tgz#a3eefb09bac92a455626d2b70ee84e4a77aa6db2"
+  integrity sha512-arbpkFqxlQmyXdbajYvCvbXwszbi8He2ENIKewdU4SIy21AoVlgX/kx7/vTxkNYb0qu3+ztCDTDmzFj7wWGwVA==
+
 abort-controller@3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/abort-controller/-/abort-controller-3.0.0.tgz"

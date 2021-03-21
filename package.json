@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.1.5",
     "@stripe/react-stripe-js": "^1.4.0",
     "@stripe/stripe-js": "^1.13.1",
+    "@zip.js/zip.js": "^2.2.23",
     "bluebird": "^3.7.2",
     "browserfs": "^1.4.3",
     "downloadjs": "^1.4.7",

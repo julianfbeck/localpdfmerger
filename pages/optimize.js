@@ -208,15 +208,7 @@ const Optimize = () => {
       )
     }
   }
-  const sortAlpabetically = () => {
-    let sortedFiles = files
-    sortedFiles.sort((a, b) => a.path.localeCompare(b.path))
-    if (sorted) {
-      sortedFiles.reverse()
-    }
-    SetSorted(val => !val)
-    setFiles(prev => [...sortedFiles])
-  }
+
   return (
     <><Head>
     <title>Merge PDF Files - Combine multiple PDF Files into one</title>
