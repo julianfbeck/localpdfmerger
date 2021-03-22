@@ -78,9 +78,9 @@ const Extract = () => {
     gtag.event({
       action: "extract",
     });
+    const toastId = toast.loading(`Loading File ${files[0].path}`);
     for (let i in files) {
       //merge first two files into merge.pdf
-      const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {
         await readFileAsync(files[i], files, setFiles);
       } catch (error) {
@@ -110,7 +110,6 @@ const Extract = () => {
       }
       await fs.unlinkAsync(files[i].path);
       await downloadAndZipFolder(fs, mode, files[i].name);
-
     }
     toast.success("Your File(s) ist Ready!", {
       id: toastId,
@@ -138,7 +137,7 @@ const Extract = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing || mode == ""}
+          disabled={isOptimizing || mode == "" || files.length == 0}
           onClick={optimizeFiles}
         >
           Extract
@@ -151,7 +150,7 @@ const Extract = () => {
       return (
         <Text px={[1, 10, 15]} pb={6}>
           Extract Information from your PDF file. You can extract Images, Meta
-          Infromation, Text, Fonts and Pages from your PDF file
+          Information, Text, Fonts and Pages from your PDF file
         </Text>
       );
     } else if (mode == "image") {
@@ -200,7 +199,7 @@ const Extract = () => {
         <meta
           name="description"
           content="Extract Information from your PDF file. You can extract 
-          Images, Meta Infromation, content in Textformat, Fonts and Pages from your PDF file"
+          Images, Meta Information, content in Textformat, Fonts and Pages from your PDF file"
         />
         <meta
           name="keywords"

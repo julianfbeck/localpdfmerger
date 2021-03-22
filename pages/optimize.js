@@ -116,7 +116,7 @@ const Optimize = () => {
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isOptimizing || files.length >= 0}
+            disabled={isOptimizing || files.length <= 0}
             variant="outline"
           >
             Optimize Files
@@ -128,7 +128,7 @@ const Optimize = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing || files.length >= 0}
+          disabled={isOptimizing || files.length <= 0}
           onClick={optimizeFiles}
         >
           Optimize Files
