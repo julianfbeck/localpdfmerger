@@ -151,7 +151,7 @@ const Extract = () => {
       return (
         <Text px={[1, 10, 15]} pb={6}>
           Extract Information from your PDF file. You can extract Images, Meta
-          Infromation, Text, Fonts and Pages from your PDF file
+          Information, Text, Fonts and Pages from your PDF file
         </Text>
       );
     } else if (mode == "image") {
@@ -200,7 +200,7 @@ const Extract = () => {
         <meta
           name="description"
           content="Extract Information from your PDF file. You can extract 
-          Images, Meta Infromation, content in Textformat, Fonts and Pages from your PDF file"
+          Images, Meta Information, content in Textformat, Fonts and Pages from your PDF file"
         />
         <meta
           name="keywords"
