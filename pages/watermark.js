@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import {
   Button,
@@ -11,30 +11,27 @@ import {
   Spacer,
   Fade,
   useDisclosure,
-  Select,
-  Container,
+  Input,
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
+import dynamic from "next/dynamic";
 import * as gtag from "../scripts/gtag";
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
+import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-import {
-  downloadFile,
-  readFileAsync,
-  runWasm,
-  downloadAndZipFolder,
-} from "../components/Helper";
+import { downloadAndZipFolder, downloadFile, readFileAsync, runWasm } from "../components/Helper";
 let fs;
 let Buffer;
 
-const Extract = () => {
+const Watermark = () => {
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [files, setFiles] = useState([]);
+  const [text, setText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mode, setMode] = useState("");
+
   const init = useCallback(async () => {
     configure(
       {
@@ -71,17 +68,13 @@ const Extract = () => {
     onOpen();
   };
 
-  const selectedValues = async (target) => {
-    setMode(target);
-  };
-  
   const startOptimizingFiles = async () => {
-    gtag.event({
-      action: "extract",
-    });
-    const toastId = toast.loading(`Loading File ${files[0].path}`);
     for (let i in files) {
+      gtag.event({
+        action: "optimize",
+      });
       //merge first two files into merge.pdf
+      const toastId = toast.loading(`Loading File ${files[i ].path}`);
       try {
         await readFileAsync(files[i], files, setFiles);
       } catch (error) {
@@ -90,17 +83,22 @@ const Extract = () => {
           id: toastId,
         });
       }
-      await fs.mkdirAsync("./" + mode);
+      let newFileName =
+        files[i].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
 
       let exitcode = await runWasm([
         "pdfcpu.wasm",
-        "extract",
-        "-m",
-        mode,
+        "stamp",
+        "add",
         "-c",
         "disable",
+        "-mode",
+        "text",
+        "--",
+        text,
+        "",
         files[i].path,
-        "./" + mode,
+        newFileName,
       ]);
 
       if (exitcode !== 0) {
@@ -110,11 +108,12 @@ const Extract = () => {
         return;
       }
       await fs.unlinkAsync(files[i].path);
-      await downloadAndZipFolder(fs, mode, files[i].name);
+      await downloadFile(fs, newFileName);
+      await fs.unlinkAsync(newFileName);
+      toast.success("Your File ist Ready!", {
+        id: toastId,
+      });
     }
-    toast.success("Your File(s) is Ready!", {
-      id: toastId,
-    });
     setFiles([]);
     return;
   };
@@ -126,10 +125,11 @@ const Extract = () => {
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isOptimizing}
+            disabled={isOptimizing || files.length <= 0}
             variant="outline"
+            
           >
-            Extract
+            Add
           </Button>
         </>
       );
@@ -138,52 +138,11 @@ const Extract = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing || mode == "" || files.length == 0}
+          disabled={isOptimizing || files.length <= 0 || text == ""}
           onClick={optimizeFiles}
         >
-          Extract
+          Add
         </Button>
-      );
-    }
-  };
-  const modeText = () => {
-    if (mode == "") {
-      return (
-        <Text px={[1, 10, 15]} pb={6}>
-          Extract Information from your PDF file. You can extract Images, Meta
-          Information, Text, Fonts and Pages from your PDF file
-        </Text>
-      );
-    } else if (mode == "image") {
-      return (
-        <Text px={[1, 10, 15]} pb={6}>
-          Extract all images from your PDF files:
-        </Text>
-      );
-    } else if (mode == "meta") {
-      return (
-        <Text px={[1, 10, 15]} pb={6}>
-          Extract the Meta-Information of your PDF-file
-        </Text>
-      );
-    } else if (mode == "content") {
-      return (
-        <Text px={[1, 10, 15]} pb={6}>
-          Extract the Content of your PDF. This will download all Text of your
-          PDF as a .txt File
-        </Text>
-      );
-    } else if (mode == "pages") {
-      return (
-        <Text px={[1, 10, 15]} pb={6}>
-          Extract all Pages from your PDF file
-        </Text>
-      );
-    } else if (mode == "font") {
-      return (
-        <Text px={[1, 10, 15]} pb={6}>
-          Extract all Fonts Formats from your PDF File
-        </Text>
       );
     }
   };
@@ -191,20 +150,19 @@ const Extract = () => {
   return (
     <>
       <Head>
-        <title>
-          Extract Information - Extract Images, Content and more from PDF files
-        </title>
+        <title>Watermark PDF Files - Add watermarks on top of your files</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Extract Information from your PDF file. You can extract 
-          Images, Meta Information, content in Textformat, Fonts and Pages from your PDF file"
+          content="Add a watermark or so called stamp to your pdf. 
+          The watermark appears in front of the existing page content - 
+          sitting on top of everything else on a page at a fixed position."
         />
         <meta
           name="keywords"
-          content="Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
+          content="Watermark ,Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
         />
         <meta name="author" content="Julian Beck" />
       </Head>
@@ -212,7 +170,6 @@ const Extract = () => {
         <Box
           p={8}
           maxWidth={["100%", "95%", "70%", "50%"]}
-          width={["100%", "95%", "70%", "50%"]}
           borderWidth={1}
           borderRadius={8}
           boxShadow="lg"
@@ -227,10 +184,14 @@ const Extract = () => {
               textAlign={["center", "center", "left", "left"]}
               pb={2}
             >
-              Extract Information
+              Add Watermark
             </Heading>
           </Center>
-          {modeText()}
+          <Text px={[1, 10, 15]} pb={6}>
+          Add a watermark or so called stamp to your pdf. 
+          The watermark appears in front of the existing page content - 
+          sitting on top of everything else on a page at a fixed position.
+          </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
           <DonationModal
@@ -261,20 +222,7 @@ const Extract = () => {
             {files.length === 0 ? "" : "You can drag and drop files to sort"}
           </Text>
           <Flex row={2}>
-            <Container maxW="sm">
-              <Select
-                onChange={(e) => selectedValues(e.target.value)}
-                colorScheme="blue"
-                placeholder="Select Information to Extract"
-                variant="outline"
-              >
-                <option value="image">Extract All Images</option>
-                <option value="meta">Extract Meta Information</option>
-                <option value="content">Extract Text</option>
-                <option value="page">Extract all Pages</option>
-                <option value="font">Extract all Font Types</option>
-              </Select>
-            </Container>
+              <Input onChange={e => setText(e.target.value)} placeholder="Enter Watermark Text"mr={5}></Input>
             <Spacer />
             <LoadingButton></LoadingButton>
           </Flex>
@@ -284,4 +232,4 @@ const Extract = () => {
   );
 };
 
-export default Extract;
+export default Watermark;

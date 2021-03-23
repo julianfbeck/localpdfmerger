@@ -60,6 +60,8 @@ export default function Home() {
           ctaLink2="/optimize"
           ctaText3="Start Extracting Images, Text..."
           ctaLink3="/extract"
+          ctaText4="Add Watermark"
+          ctaLink4="/watermark"
         />
       </LandingLayout>
     </>

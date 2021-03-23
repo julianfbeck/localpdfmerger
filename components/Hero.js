@@ -19,9 +19,11 @@ export default function Hero({
   ctaLink1,
   ctaLink2,
   ctaLink3,
+  ctaLink4,
   ctaText1,
   ctaText2,
   ctaText3,
+  ctaText4,
   ...rest
 }) {
   return (
@@ -83,6 +85,11 @@ export default function Hero({
         <Link href={ctaLink3}>
           <Button borderRadius="8px" py="4" px="4" lineHeight="1" size="md">
             {ctaText3}
+          </Button>
+        </Link>
+        <Link href={ctaLink4}>
+          <Button borderRadius="8px" py="4" px="4" lineHeight="1" size="md">
+            {ctaText4}
           </Button>
         </Link>
         <Text

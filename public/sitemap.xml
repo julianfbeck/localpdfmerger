@@ -7,21 +7,26 @@
       
 	<url>
 		<loc>https://localpdf.tech/extract</loc>
-		<lastmod>2021-03-22</lastmod>
+		<lastmod>2021-03-23</lastmod>
 	</url>
 
 	<url>
 		<loc>https://localpdf.tech</loc>
-		<lastmod>2021-03-22</lastmod>
+		<lastmod>2021-03-23</lastmod>
 	</url>
 
 	<url>
 		<loc>https://localpdf.tech/merge</loc>
-		<lastmod>2021-03-22</lastmod>
+		<lastmod>2021-03-23</lastmod>
 	</url>
 
 	<url>
 		<loc>https://localpdf.tech/optimize</loc>
-		<lastmod>2021-03-22</lastmod>
+		<lastmod>2021-03-23</lastmod>
+	</url>
+
+	<url>
+		<loc>https://localpdf.tech/watermark</loc>
+		<lastmod>2021-03-23</lastmod>
 	</url>
 </urlset>
