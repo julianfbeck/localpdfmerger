@@ -15,17 +15,14 @@ import {
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
-import dynamic from "next/dynamic";
 import * as gtag from "../scripts/gtag";
 
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
-import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-import Header from "../components/Header";
+import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
 
-const path = require("path");
 let fs;
 let Buffer;
 const Merge = () => {
@@ -63,48 +60,6 @@ const Merge = () => {
     init();
   }, [init]);
 
-  const downloadFile = async (file) => {
-    let data = await fs.readFileAsync(file);
-    download(new Blob([data]), file);
-  };
-
-  const readFileAsync = (file) => {
-    return new Promise((resolve, reject) => {
-      console.log(`Writing ${file.name} to disk`);
-      if (file.isLoaded) return resolve();
-
-      let reader = new FileReader();
-      reader.fileName = file.name;
-
-      reader.onload = async (e) => {
-        let data = e.target.result.slice();
-        await fs.writeFileAsync(`/${e.target.fileName}`, Buffer.from(data));
-        let exitCode = await runWasm([
-          "pdfcpu.wasm",
-          "validate",
-          "-c",
-          "disable",
-          `/${e.target.fileName}`,
-        ]);
-
-        if (exitCode !== 0) return reject();
-        let updatedFile = files.map((file) => {
-          if (file.name === path.basename(e.target.fileName)) {
-            file.validated = true;
-            file.isLoaded = true;
-          }
-          return file;
-        });
-        setFiles(updatedFile);
-        resolve(reader.result);
-      };
-
-      reader.onerror = reject;
-
-      reader.readAsArrayBuffer(file);
-    });
-  };
-
   const mergeFiles = async () => {
     setIsMerging(true);
     await mergeOneByOne();
@@ -121,8 +76,8 @@ const Merge = () => {
     const toastId = toast.loading(`Merging ${files[0].path} ${files[1].path} `);
     console.log(`Merging ${files[0].path} ${files[1].path}`);
     try {
-      await readFileAsync(files[0]);
-      await readFileAsync(files[1]);
+      await readFileAsync(files[0], files, setFiles);
+      await readFileAsync(files[1], files, setFiles);
     } catch (error) {
       console.log(error);
       toast.error("There was an error loading your PDFs", {
@@ -149,7 +104,7 @@ const Merge = () => {
     await fs.unlinkAsync(files[1].path);
 
     if (files.length === 2) {
-      await downloadFile(`merge.pdf`);
+      await downloadFile(fs, "merge.pdf");
       await fs.unlinkAsync("./merge.pdf");
       toast.success("Your File ist Ready!", {
         id: toastId,
@@ -165,7 +120,7 @@ const Merge = () => {
         id: toastId,
       });
       try {
-        await readFileAsync(nextFile);
+        await readFileAsync(nextFile, files, setFiles);
       } catch (error) {
         console.log(error);
         toast.error("There was an error loading your PDFs", {
@@ -190,27 +145,11 @@ const Merge = () => {
       await fs.unlinkAsync(nextFile.path);
     }
     //finished
-    await downloadFile(`merge.pdf`);
+    await downloadFile(fs ,"merge.pdf");
     toast.success("Your File ist Ready!", {
       id: toastId,
     });
     setFiles([]);
-  };
-
-  const runWasm = async (param) => {
-    if (window.cachedWasmResponse === undefined) {
-      const response = await fetch("pdfcpu.wasm");
-      const buffer = await response.arrayBuffer();
-      window.cachedWasmResponse = buffer;
-      global.go = new Go();
-    }
-    const { instance } = await WebAssembly.instantiate(
-      window.cachedWasmResponse,
-      window.go.importObject
-    );
-    window.go.argv = param;
-    await window.go.run(instance);
-    return window.go.exitCode;
   };
 
   const LoadingButton = () => {
