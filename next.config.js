@@ -1,13 +1,19 @@
-const sitemap = require('nextjs-sitemap-generator');  
-sitemap({  
-  baseUrl: 'https://localpdf.tech',  
-  pagesDirectory: __dirname + "/pages",  
-  targetDirectory : 'public/' ,
-  ignoreIndexFiles : true
+const sitemap = require("nextjs-sitemap-generator");
+const withPWA = require("next-pwa");
+
+sitemap({
+  baseUrl: "https://localpdf.tech",
+  pagesDirectory: __dirname + "/pages",
+  targetDirectory: "public/",
+  ignoreIndexFiles: true,
 });
-module.exports = {
+
+module.exports = withPWA({
   experimental: {
     optimizeFonts: true,
-    optimizeImages: true
-  }
-}
+    optimizeImages: true,
+  },
+  pwa: {
+    dest: "./public",
+  },
+});

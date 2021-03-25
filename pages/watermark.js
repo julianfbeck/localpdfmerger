@@ -15,19 +15,18 @@ import {
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
-import dynamic from "next/dynamic";
 import * as gtag from "../scripts/gtag";
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
-import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-import { downloadAndZipFolder, downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import {downloadFile, readFileAsync, runWasm } from "../components/Helper";
+
 let fs;
 let Buffer;
 
 const Watermark = () => {
-  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [isWatermarking, setIsWatermarking] = useState(false);
   const [files, setFiles] = useState([]);
   const [text, setText] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,17 +60,17 @@ const Watermark = () => {
     init();
   }, [init]);
 
-  const optimizeFiles = async () => {
-    setIsOptimizing(true);
-    await startOptimizingFiles();
-    setIsOptimizing(false);
+  const watermarkFiles = async () => {
+    setIsWatermarking(true);
+    await startWatermarkingFiles();
+    setIsWatermarking(false);
     onOpen();
   };
 
-  const startOptimizingFiles = async () => {
+  const startWatermarkingFiles = async () => {
     for (let i in files) {
       gtag.event({
-        action: "optimize",
+        action: "watermark",
       });
       //merge first two files into merge.pdf
       const toastId = toast.loading(`Loading File ${files[i ].path}`);
@@ -84,7 +83,7 @@ const Watermark = () => {
         });
       }
       let newFileName =
-        files[i].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
+        files[i].name.replace(/\.[^/.]+$/, "") + "-watermarked.pdf";
 
       let exitcode = await runWasm([
         "pdfcpu.wasm",
@@ -102,7 +101,7 @@ const Watermark = () => {
       ]);
 
       if (exitcode !== 0) {
-        toast.error("There was an error optimizing your PDFs", {
+        toast.error("There was an error watermarking your PDFs", {
           id: toastId,
         });
         return;
@@ -119,13 +118,13 @@ const Watermark = () => {
   };
 
   const LoadingButton = () => {
-    if (isOptimizing) {
+    if (isWatermarking) {
       return (
         <>
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isOptimizing || files.length <= 0}
+            disabled={isWatermarking || files.length <= 0}
             variant="outline"
             
           >
@@ -138,8 +137,8 @@ const Watermark = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing || files.length <= 0 || text == ""}
-          onClick={optimizeFiles}
+          disabled={isWatermarking || files.length <= 0 || text == ""}
+          onClick={watermarkFiles}
         >
           Add
         </Button>
@@ -206,7 +205,7 @@ const Watermark = () => {
                   <DragDrop
                     setState={setFiles}
                     state={files}
-                    isMerging={isOptimizing}
+                    isMerging={isWatermarking}
                   ></DragDrop>
                 </div>
               </Stack>

@@ -22,7 +22,6 @@ import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import DonationModal from "../components/DonationModal";
 import {
-  downloadFile,
   readFileAsync,
   runWasm,
   downloadAndZipFolder,
@@ -31,7 +30,7 @@ let fs;
 let Buffer;
 
 const Extract = () => {
-  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
   const [files, setFiles] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [mode, setMode] = useState("");
@@ -64,10 +63,10 @@ const Extract = () => {
     init();
   }, [init]);
 
-  const optimizeFiles = async () => {
-    setIsOptimizing(true);
-    await startOptimizingFiles();
-    setIsOptimizing(false);
+  const extractFiles = async () => {
+    setIsExtracting(true);
+    await startExtractingFiles();
+    setIsExtracting(false);
     onOpen();
   };
 
@@ -75,7 +74,7 @@ const Extract = () => {
     setMode(target);
   };
   
-  const startOptimizingFiles = async () => {
+  const startExtractingFiles = async () => {
     gtag.event({
       action: "extract",
     });
@@ -104,7 +103,7 @@ const Extract = () => {
       ]);
 
       if (exitcode !== 0) {
-        toast.error("There was an error optimizing your PDFs", {
+        toast.error("There was an error extracting Files from your PDFs", {
           id: toastId,
         });
         return;
@@ -120,13 +119,13 @@ const Extract = () => {
   };
 
   const LoadingButton = () => {
-    if (isOptimizing) {
+    if (isExtracting) {
       return (
         <>
           <Button
             colorScheme="blue"
             isLoading
-            disabled={isOptimizing}
+            disabled={isExtracting}
             variant="outline"
           >
             Extract
@@ -138,8 +137,8 @@ const Extract = () => {
         <Button
           colorScheme="blue"
           variant="outline"
-          disabled={isOptimizing || mode == "" || files.length == 0}
-          onClick={optimizeFiles}
+          disabled={isExtracting || mode == "" || files.length == 0}
+          onClick={extractFiles}
         >
           Extract
         </Button>
@@ -245,7 +244,7 @@ const Extract = () => {
                   <DragDrop
                     setState={setFiles}
                     state={files}
-                    isMerging={isOptimizing}
+                    isMerging={isExtracting}
                   ></DragDrop>
                 </div>
               </Stack>
