@@ -14,6 +14,6 @@ module.exports = withPWA({
     optimizeImages: true,
   },
   pwa: {
-    dest: "public",
+    dest: "./public",
   },
 });
