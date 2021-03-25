@@ -84,7 +84,7 @@ const Watermark = () => {
         });
       }
       let newFileName =
-        files[i].name.replace(/\.[^/.]+$/, "") + "-optimized.pdf";
+        files[i].name.replace(/\.[^/.]+$/, "") + "-watermarked.pdf";
 
       let exitcode = await runWasm([
         "pdfcpu.wasm",
