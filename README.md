@@ -5,7 +5,8 @@
 
 This Website uses [pdfcpu](https://github.com/pdfcpu/pdfcpu "pdfcpu") and is based on [this](https://dev.to/wcchoi/browser-side-pdf-processing-with-go-and-webassembly-13hn "this") article by [wcchoi](https://github.com/wcchoi "wcchoi").
 
-urrently, we support Merging PDFs, optimizing PDFs, and extracting Information like Images from PDF Files
+Currently, we support Merging PDFs, optimizing PDFs, and extracting Information like Images from PDF Files as well as adding watermarks
+
 ## Build using:
 - Nextjs 
 - Charka-ui as Component Framework
