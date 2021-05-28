@@ -73,7 +73,7 @@ const Extract = () => {
   const selectedValues = async (target) => {
     setMode(target);
   };
-  
+
   const startExtractingFiles = async () => {
     gtag.event({
       action: "extract",
@@ -203,7 +203,7 @@ const Extract = () => {
         />
         <meta
           name="keywords"
-          content="Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
+          content="extract pictures, extract fonts, extract pages, pdf, local"
         />
         <meta name="author" content="Julian Beck" />
       </Head>

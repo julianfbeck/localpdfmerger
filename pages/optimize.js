@@ -21,7 +21,12 @@ import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
-import { downloadAndZipFolder, downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import {
+  downloadAndZipFolder,
+  downloadFile,
+  readFileAsync,
+  runWasm,
+} from "../components/Helper";
 let fs;
 let Buffer;
 
@@ -72,7 +77,7 @@ const Optimize = () => {
         action: "optimize",
       });
       //merge first two files into merge.pdf
-      const toastId = toast.loading(`Loading File ${files[i ].path}`);
+      const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {
         await readFileAsync(files[i], files, setFiles);
       } catch (error) {
@@ -140,17 +145,17 @@ const Optimize = () => {
   return (
     <>
       <Head>
-        <title>Optimize PDF Files -  Get rid of redundant page resources</title>
+        <title>Optimize PDF Files - Get rid of redundant page resources</title>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Get rid of redundant page resources like embedded fonts and images and download the results with better PDF compression."
+          content="Optimize PDF files using Webassembly. Upload Files, download smaller files"
         />
         <meta
           name="keywords"
-          content="Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
+          content="optimize, pdf, smaller pdf, compress pdf"
         />
         <meta name="author" content="Julian Beck" />
       </Head>
@@ -177,7 +182,7 @@ const Optimize = () => {
           </Center>
           <Text px={[1, 10, 15]} pb={6}>
             Get rid of redundant page resources like embedded fonts and images
-            and download the results with better PDF compression.
+            and download optimized PFd files with better compression.
           </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />

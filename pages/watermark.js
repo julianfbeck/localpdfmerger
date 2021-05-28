@@ -20,7 +20,7 @@ import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import DonationModal from "../components/DonationModal";
-import {downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
 
 let fs;
 let Buffer;
@@ -73,7 +73,7 @@ const Watermark = () => {
         action: "watermark",
       });
       //merge first two files into merge.pdf
-      const toastId = toast.loading(`Loading File ${files[i ].path}`);
+      const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {
         await readFileAsync(files[i], files, setFiles);
       } catch (error) {
@@ -126,7 +126,6 @@ const Watermark = () => {
             isLoading
             disabled={isWatermarking || files.length <= 0}
             variant="outline"
-            
           >
             Add
           </Button>
@@ -155,13 +154,11 @@ const Watermark = () => {
         <meta name="theme-color" content="#000000" />
         <meta
           name="description"
-          content="Add a watermark or so called stamp to your pdf. 
-          The watermark appears in front of the existing page content - 
-          sitting on top of everything else on a page at a fixed position."
+          content="Add watermarks to your PDF files, watermark pdfs"
         />
         <meta
           name="keywords"
-          content="Watermark ,Optimize, PDF, Optimize PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, redundant, page, resources, embedded, fonts, compression"
+          content="Watermark, add Watermarks, local, Watermark to pdf"
         />
         <meta name="author" content="Julian Beck" />
       </Head>
@@ -187,9 +184,9 @@ const Watermark = () => {
             </Heading>
           </Center>
           <Text px={[1, 10, 15]} pb={6}>
-          Add a watermark or so called stamp to your pdf. 
-          The watermark appears in front of the existing page content - 
-          sitting on top of everything else on a page at a fixed position.
+            Add a watermark or so called stamp to your pdf. The watermark
+            appears in front of the existing page content - sitting on top of
+            everything else on a page at a fixed position.
           </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
@@ -221,7 +218,11 @@ const Watermark = () => {
             {files.length === 0 ? "" : "You can drag and drop files to sort"}
           </Text>
           <Flex row={2}>
-              <Input onChange={e => setText(e.target.value)} placeholder="Enter Watermark Text"mr={5}></Input>
+            <Input
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Enter Watermark Text"
+              mr={5}
+            ></Input>
             <Spacer />
             <LoadingButton></LoadingButton>
           </Flex>

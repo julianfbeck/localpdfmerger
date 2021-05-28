@@ -119,9 +119,9 @@ export default function Hero({
           color="primary.800"
           opacity="0.6"
         >
-          This app is Open Source, you can find the Code{" "}
+          This app is Open Source, you can find the Code on{" "}
           <u>
-            <a href="https://github.com/jufabeck2202/localpdfmerger">here</a>
+            <a href="https://github.com/jufabeck2202/localpdfmerger">Github</a>
           </u>
         </Text>
       </Stack>
@@ -132,6 +132,7 @@ export default function Hero({
           rounded="1rem"
           shadow="2xl"
           background="white"
+          alt="localpdf Logo with two PDF files side by side"
         />
       </Box>
     </Flex>

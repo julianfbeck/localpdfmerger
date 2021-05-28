@@ -145,7 +145,7 @@ const Merge = () => {
       await fs.unlinkAsync(nextFile.path);
     }
     //finished
-    await downloadFile(fs ,"merge.pdf");
+    await downloadFile(fs, "merge.pdf");
     toast.success("Your File ist Ready!", {
       id: toastId,
     });
@@ -202,7 +202,7 @@ const Merge = () => {
         />
         <meta
           name="keywords"
-          content="Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu"
+          content="Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly"
         />
         <meta name="author" content="Julian Beck" />
       </Head>
