@@ -182,7 +182,7 @@ const Optimize = () => {
           </Center>
           <Text px={[1, 10, 15]} pb={6}>
             Get rid of redundant page resources like embedded fonts and images
-            and download optimized PFd files with better compression.
+            and download optimized PDF files with better compression.
           </Text>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />
