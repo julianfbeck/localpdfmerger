@@ -17,12 +17,11 @@ const DonationModal = ({ isOpen, onOpen, onClose }) => {
   const [donations, setDonations] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/payment")
+    fetch("/api/payment")
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data); // this will be a string
         setDonations(data.total);
       });
   }, []);
@@ -41,7 +40,7 @@ const DonationModal = ({ isOpen, onOpen, onClose }) => {
               The domain currently costs $30/year. So far people have donated $
               {donations}
             </Text>
-            <Progress hasStripe value={(donations * 3, 33)} />
+            <Progress hasStripe value={donations * 3.33} />
           </ModalBody>
           <VStack>
             <DonationButton
