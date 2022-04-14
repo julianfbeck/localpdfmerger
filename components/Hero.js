@@ -121,7 +121,7 @@ export default function Hero({
         >
           This app is Open Source, you can find the Code on{" "}
           <u>
-            <a href="https://github.com/jufabeck2202/localpdfmerger">Github</a>
+            <a href="https://github.com/julianfbeck/localpdfmerger">Github</a>
           </u>
         </Text>
       </Stack>
