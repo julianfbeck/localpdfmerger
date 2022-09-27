@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
-import * as gtag from "../scripts/gtag";
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
@@ -69,9 +68,7 @@ const Watermark = () => {
 
   const startWatermarkingFiles = async () => {
     for (let i in files) {
-      gtag.event({
-        action: "watermark",
-      });
+    
       //merge first two files into merge.pdf
       const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {

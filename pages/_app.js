@@ -1,27 +1,18 @@
 import '../styles/globals.css'
 import { ChakraProvider } from '@chakra-ui/react'
-import { useEffect } from 'react'
-import { useRouter } from 'next/router'
-import * as gtag from '../scripts/gtag'
+import PlausibleProvider from "next-plausible";
 
 
 function MyApp ({ Component, pageProps }) {
-  const router = useRouter()
-  useEffect(() => {
-    const handleRouteChange = (url) => {
-      gtag.pageview(url)
-    }
-    router.events.on('routeChangeComplete', handleRouteChange)
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
   return (
+    
+    <PlausibleProvider domain="localpdf.tech" selfHosted customDomain="https://plausible.home.juli.sh" trackLocalhost enabled>
     <ChakraProvider>
       <div className="custom">
       <Component {...pageProps} />
       </div>
     </ChakraProvider>
+    </PlausibleProvider>
   )
 }
 

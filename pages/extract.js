@@ -16,7 +16,6 @@ import {
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
-import * as gtag from "../scripts/gtag";
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
@@ -75,9 +74,7 @@ const Extract = () => {
   };
 
   const startExtractingFiles = async () => {
-    gtag.event({
-      action: "extract",
-    });
+  
     const toastId = toast.loading(`Loading File ${files[0].path}`);
     for (let i in files) {
       //merge first two files into merge.pdf

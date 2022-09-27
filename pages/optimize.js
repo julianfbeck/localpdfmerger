@@ -15,7 +15,6 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
 import dynamic from "next/dynamic";
-import * as gtag from "../scripts/gtag";
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
@@ -73,9 +72,7 @@ const Optimize = () => {
 
   const startOptimizingFiles = async () => {
     for (let i in files) {
-      gtag.event({
-        action: "optimize",
-      });
+    
       //merge first two files into merge.pdf
       const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {
