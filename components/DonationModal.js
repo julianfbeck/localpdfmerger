@@ -31,14 +31,14 @@ const DonationModal = ({ isOpen, onOpen, onClose }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Your file has been downloaded </ModalHeader>
+          <ModalHeader>This Site is completely free</ModalHeader>
           <ModalBody>
             <Text fontWeight="bold" mb="1rem">
               Support this site ❤️ by donating!
             </Text>
             <Text mb="2">
-              The domain currently costs $30/year. So far people have donated $
-              {donations}
+              Help me pay for the domain and hosting. The domain currently costs
+              $30/year. So far people have donated ${donations}
             </Text>
             <Progress hasStripe value={donations * 3.33} />
           </ModalBody>
