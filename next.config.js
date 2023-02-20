@@ -8,7 +8,17 @@ sitemap({
   ignoreIndexFiles: true,
 });
 
-module.exports = withPWA({
+// module.exports = withPWA({
+//   experimental: {
+//     optimizeFonts: true,
+//     optimizeImages: true,
+//   },
+//   pwa: {
+//     dest: "./public",
+//   },
+// });
+
+module.exports = {
   experimental: {
     optimizeFonts: true,
     optimizeImages: true,
@@ -16,4 +26,4 @@ module.exports = withPWA({
   pwa: {
     dest: "./public",
   },
-});
+};
