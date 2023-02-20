@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import {
   Button,
@@ -74,7 +74,6 @@ const Extract = () => {
   };
 
   const startExtractingFiles = async () => {
-  
     const toastId = toast.loading(`Loading File ${files[0].path}`);
     for (let i in files) {
       //merge first two files into merge.pdf

@@ -14,11 +14,9 @@ import {
 } from "@chakra-ui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { BFSRequire, configure } from "browserfs";
-import dynamic from "next/dynamic";
 import DropzoneField from "../components/dropzone";
 import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
-import { createBreakpoints } from "@chakra-ui/theme-tools";
 import DonationModal from "../components/DonationModal";
 import {
   downloadAndZipFolder,
@@ -72,7 +70,6 @@ const Optimize = () => {
 
   const startOptimizingFiles = async () => {
     for (let i in files) {
-    
       //merge first two files into merge.pdf
       const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {
