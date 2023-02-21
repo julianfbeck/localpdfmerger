@@ -25,6 +25,7 @@ import {
   runWasm,
   downloadAndZipFolder,
 } from "../components/Helper";
+import FeatureBlock from "../components/FeatureBlock";
 let fs;
 let Buffer;
 
@@ -214,7 +215,8 @@ const Extract = () => {
           backgroundColor="white"
         >
           <Center>
-            <Heading
+          <FeatureBlock />
+            {/* <Heading
               as="h2"
               size="lg"
               fontWeight="bold"
@@ -223,7 +225,7 @@ const Extract = () => {
               pb={2}
             >
               Extract Information
-            </Heading>
+            </Heading> */}
           </Center>
           {modeText()}
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>

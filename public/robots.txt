@@ -2,3 +2,4 @@ Sitemap: https://localpdf.tech/sitemap.xml
 
 User-agent: *
 Allow: /*
+Disallow: /_next/static/

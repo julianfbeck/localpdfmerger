@@ -1,6 +1,6 @@
 # Localpdf.tech
 ## Attention:
-This Project is one of my first Project and therfore is not well coded. It`s mostly a Proof of Concept and I will probably rewrite sometimes using typescript and a better code structure in general. There is a lot of duplicated code, hacks and other bad practices. Feel free to contribute!
+This Project is one of my first Project and therefore is not well coded. It`s mostly a Proof of Concept and I will probably rewrite sometimes using typescript and a better code structure in general. There is a lot of duplicated code, hacks and other bad practices. Feel free to contribute!
 ---
 
 
