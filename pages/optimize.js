@@ -24,6 +24,8 @@ import {
   readFileAsync,
   runWasm,
 } from "../components/Helper";
+import { NextSeo } from "next-seo";
+import FeatureBlock from "../components/FeatureBlock";
 let fs;
 let Buffer;
 
@@ -138,21 +140,34 @@ const Optimize = () => {
 
   return (
     <>
-      <Head>
-        <title>Optimize PDF Files - Get rid of redundant page resources</title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta
-          name="description"
-          content="Optimize PDF files using Webassembly. Upload Files, download smaller files"
-        />
-        <meta
-          name="keywords"
-          content="optimize, pdf, smaller pdf, compress pdf"
-        />
-        <meta name="author" content="Julian Beck" />
-      </Head>
+      <NextSeo
+        title="Optimize PDF Files with Local PDF"
+        description="Local PDF allows you to optimize your PDF files to reduce their file size, without compromising on quality. Try our PDF optimizer tool today."
+        canonical="https://www.localpdf.com/optimize"
+        openGraph={{
+          url: "https://www.localpdf.com/optimize",
+          title: "Optimize PDF Files with Local PDF",
+          description:
+            "Local PDF allows you to optimize your PDF files to reduce their file size, without compromising on quality. Try our PDF optimizer tool today.",
+          type: "website",
+          images: [
+            {
+              url: "https://www.localpdf.com/og-image-01.png",
+              width: 1200,
+              height: 630,
+              alt: "Optimize PDF Files with Local PDF",
+              type: "image/jpeg",
+            },
+          ],
+          siteName: "Local PDF",
+        }}
+        twitter={{
+          handle: "@julianfbeck",
+          site: "@julianfbeck",
+          cardType: "summary_large_image",
+        }}
+      />
+
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
@@ -163,18 +178,14 @@ const Optimize = () => {
           backgroundColor="white"
         >
           <Center>
-            <Heading
-              as="h2"
-              size="lg"
-              fontWeight="bold"
-              color="primary.800"
-              textAlign={["center", "center", "left", "left"]}
-              pb={2}
-            >
-              Optimize PDFs
-            </Heading>
+            <FeatureBlock
+              title={"Optimize PDF Files"}
+              text={
+                "Local PDF allows you to optimize your PDF files to reduce their file size, without compromising on quality. Try our PDF optimizer tool today."
+              }
+            />
           </Center>
-          <Text px={[1, 10, 15]} pb={6}>
+          <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
             Get rid of redundant page resources like embedded fonts and images
             and download optimized PDF files with better compression.
           </Text>

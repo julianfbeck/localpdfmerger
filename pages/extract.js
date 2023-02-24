@@ -146,39 +146,39 @@ const Extract = () => {
   const modeText = () => {
     if (mode == "") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract Information from your PDF file. You can extract Images, Meta
           Information, Text, Fonts and Pages from your PDF file
         </Text>
       );
     } else if (mode == "image") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract all images from your PDF files:
         </Text>
       );
     } else if (mode == "meta") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract the Meta-Information of your PDF-file
         </Text>
       );
     } else if (mode == "content") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract the Content of your PDF. This will download all Text of your
           PDF as a .txt File
         </Text>
       );
     } else if (mode == "pages") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract all Pages from your PDF file
         </Text>
       );
     } else if (mode == "font") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract all Fonts Formats from your PDF File
         </Text>
       );
@@ -199,7 +199,7 @@ const Extract = () => {
           type: "website",
           images: [
             {
-              url: "https://www.localpdf.com/og-image-01.jpg",
+              url: "https://www.localpdf.com/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Local PDF allows you to extract information, such as images, from your PDF files directly in your browser. No need to upload your files to a third-party server.",
@@ -226,7 +226,13 @@ const Extract = () => {
           backgroundColor="white"
         >
           <Center>
-            <FeatureBlock />
+            <FeatureBlock
+              title={"Extract Information"}
+              text={
+                "Local PDF allows you to extract information, such as images, from your PDF files directly in your browser. No need to upload your files to a third-party server."
+              }
+              h
+            />
           </Center>
           {modeText()}
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>

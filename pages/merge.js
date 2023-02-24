@@ -22,6 +22,7 @@ import { promisifyAll } from "bluebird";
 import DonationModal from "../components/DonationModal";
 import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
 import { NextSeo } from "next-seo";
+import FeatureBlock from "../components/FeatureBlock";
 
 let fs;
 let Buffer;
@@ -200,7 +201,7 @@ const Merge = () => {
           type: "website",
           images: [
             {
-              url: "https://www.localpdf.com/og-image-02.jpg",
+              url: "https://www.localpdf.com/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Merge PDF Files with Local PDF",
@@ -210,8 +211,8 @@ const Merge = () => {
           siteName: "Local PDF",
         }}
         twitter={{
-          handle: "@localpdf",
-          site: "@localpdf",
+          handle: "@julianfbeck",
+          site: "@julianfbeck",
           cardType: "summary_large_image",
         }}
       />
@@ -226,16 +227,12 @@ const Merge = () => {
           backgroundColor="white"
         >
           <Center>
-            <Heading
-              as="h2"
-              size="lg"
-              fontWeight="bold"
-              color="primary.800"
-              textAlign={["center", "center", "left", "left"]}
-              pb={2}
-            >
-              Merge PDFs
-            </Heading>
+            <FeatureBlock
+              title={"Merge PDFs"}
+              text={
+                "Local PDF allows you to merge multiple PDF files into one, directly in your browser. Upload your PDFs, sort them and merge! No need to upload your files to a third-party server."
+              }
+            />
           </Center>
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
           <Toaster />

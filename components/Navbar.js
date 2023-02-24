@@ -249,21 +249,21 @@ const MobileNavItem = ({ label, children, href }) => {
 
 const NAV_ITEMS = [
   {
-    label: "Edit Pdfs",
+    label: "Edit PDFs",
     children: [
       {
-        label: "Merge Pdfs",
+        label: "Merge PDFs",
         subLabel: "Merge multiple pdfs into one",
         href: "/merge",
       },
       {
-        label: "Optimize Pdfs",
+        label: "Optimize PDFs",
         subLabel: "Optimze pdfs, reduce file size",
         href: "/optimize",
       },
 
       {
-        label: "Extract Pdfs",
+        label: "Extract PDFs",
         subLabel: "Extract images, text, fonts or individual pages",
         href: "/extract",
       },

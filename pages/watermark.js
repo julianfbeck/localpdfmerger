@@ -20,6 +20,8 @@ import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import DonationModal from "../components/DonationModal";
 import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import { NextSeo } from "next-seo";
+import FeatureBlock from "../components/FeatureBlock";
 
 let fs;
 let Buffer;
@@ -68,7 +70,6 @@ const Watermark = () => {
 
   const startWatermarkingFiles = async () => {
     for (let i in files) {
-    
       //merge first two files into merge.pdf
       const toastId = toast.loading(`Loading File ${files[i].path}`);
       try {
@@ -144,21 +145,34 @@ const Watermark = () => {
 
   return (
     <>
-      <Head>
-        <title>Watermark PDF Files - Add watermarks on top of your files</title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta
-          name="description"
-          content="Add watermarks to your PDF files, watermark pdfs"
-        />
-        <meta
-          name="keywords"
-          content="Watermark, add Watermarks, local, Watermark to pdf"
-        />
-        <meta name="author" content="Julian Beck" />
-      </Head>
+      <NextSeo
+        title="Add Watermarks to PDF Files with Local PDF"
+        description="Local PDF allows you to easily add watermarks to your PDF files. Try our PDF watermark tool today and protect your documents with a custom watermark."
+        canonical="https://www.localpdf.com/watermark"
+        openGraph={{
+          url: "https://www.localpdf.com/watermark",
+          title: "Add Watermarks to PDF Files with Local PDF",
+          description:
+            "Local PDF allows you to easily add watermarks to your PDF files. Try our PDF watermark tool today and protect your documents with a custom watermark.",
+          type: "website",
+          images: [
+            {
+              url: "https://www.localpdf.com/og-image-01.png",
+              width: 1200,
+              height: 630,
+              alt: "Add Watermarks to PDF Files with Local PDF",
+              type: "image/jpeg",
+            },
+          ],
+          siteName: "Local PDF",
+        }}
+        twitter={{
+          handle: "@julianfbeck",
+          site: "@julianfbeck",
+          cardType: "summary_large_image",
+        }}
+      />
+
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
@@ -169,18 +183,14 @@ const Watermark = () => {
           backgroundColor="white"
         >
           <Center>
-            <Heading
-              as="h2"
-              size="lg"
-              fontWeight="bold"
-              color="primary.800"
-              textAlign={["center", "center", "left", "left"]}
-              pb={2}
-            >
-              Add Watermark
-            </Heading>
+            <FeatureBlock
+              title={"Add Watermarks"}
+              text={
+                "Local PDF allows you to easily add watermarks to your PDF files. Try our PDF watermark tool today and protect your documents with a custom watermark."
+              }
+            />
           </Center>
-          <Text px={[1, 10, 15]} pb={6}>
+          <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
             Add a watermark or so called stamp to your pdf. The watermark
             appears in front of the existing page content - sitting on top of
             everything else on a page at a fixed position.
