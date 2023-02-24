@@ -1,4 +1,4 @@
-FROM node:current-alpine AS base
+FROM node:16 AS base
 WORKDIR /base
 COPY package*.json ./
 RUN npm install
@@ -19,4 +19,4 @@ COPY --from=build /build/public ./public
 RUN npm install next
 
 EXPOSE 80
-CMD npm run start 
+CMD npm run start
