@@ -25,6 +25,8 @@ import {
   runWasm,
   downloadAndZipFolder,
 } from "../components/Helper";
+import FeatureBlock from "../components/FeatureBlock";
+import { NextSeo } from "next-seo";
 let fs;
 let Buffer;
 
@@ -144,39 +146,39 @@ const Extract = () => {
   const modeText = () => {
     if (mode == "") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract Information from your PDF file. You can extract Images, Meta
           Information, Text, Fonts and Pages from your PDF file
         </Text>
       );
     } else if (mode == "image") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract all images from your PDF files:
         </Text>
       );
     } else if (mode == "meta") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract the Meta-Information of your PDF-file
         </Text>
       );
     } else if (mode == "content") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract the Content of your PDF. This will download all Text of your
           PDF as a .txt File
         </Text>
       );
     } else if (mode == "pages") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract all Pages from your PDF file
         </Text>
       );
     } else if (mode == "font") {
       return (
-        <Text px={[1, 10, 15]} pb={6}>
+        <Text color={"gray.500"} px={[1, 10, 15]} pb={6}>
           Extract all Fonts Formats from your PDF File
         </Text>
       );
@@ -185,24 +187,34 @@ const Extract = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          Extract Information - Extract Images, Content and more from PDF files
-        </title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta
-          name="description"
-          content="Extract Information from your PDF file. You can extract 
-          Images, Meta Information, content in Textformat, Fonts and Pages from your PDF file"
-        />
-        <meta
-          name="keywords"
-          content="extract pictures, extract fonts, extract pages, pdf, local"
-        />
-        <meta name="author" content="Julian Beck" />
-      </Head>
+      <NextSeo
+        title="Extract PDF Information with Local PDF"
+        description="Extract Images, Text, Meta Information, Fonts and Pages from your PDF files directly in your browser. No need to upload your files to a third-party server."
+        canonical="https://www.localpdf.com/extract"
+        openGraph={{
+          url: "https://www.localpdf.com/extract",
+          title: "Extract PDF Information with Local PDF",
+          description:
+            "Extract Images, Text, Meta Information, Fonts and Pages from your PDF files directly in your browser. No need to upload your files to a third-party server.",
+          type: "website",
+          images: [
+            {
+              url: "https://www.localpdf.com/og-image-01.png",
+              width: 1200,
+              height: 630,
+              alt: "Local PDF allows you to extract information, such as images, from your PDF files directly in your browser. No need to upload your files to a third-party server.",
+              type: "image/jpeg",
+            },
+          ],
+          siteName: "Local PDF",
+        }}
+        twitter={{
+          handle: "@julianfbeck",
+          site: "@julianfbeck",
+          cardType: "summary_large_image",
+        }}
+      />
+
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
@@ -214,16 +226,13 @@ const Extract = () => {
           backgroundColor="white"
         >
           <Center>
-            <Heading
-              as="h2"
-              size="lg"
-              fontWeight="bold"
-              color="primary.800"
-              textAlign={["center", "center", "left", "left"]}
-              pb={2}
-            >
-              Extract Information
-            </Heading>
+            <FeatureBlock
+              title={"Extract Information"}
+              text={
+                "Local PDF allows you to extract information, such as images, from your PDF files directly in your browser. No need to upload your files to a third-party server."
+              }
+              h
+            />
           </Center>
           {modeText()}
           <DropzoneField setFiles={setFiles} files={files}></DropzoneField>
@@ -271,7 +280,7 @@ const Extract = () => {
               </Select>
             </Container>
             <Spacer />
-            <LoadingButton></LoadingButton>
+            <LoadingButton />
           </Flex>
         </Box>
       </Flex>

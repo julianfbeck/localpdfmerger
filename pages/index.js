@@ -1,3 +1,4 @@
+import { NextSeo } from "next-seo";
 import Head from "next/head";
 import Hero from "../components/Hero";
 import LandingLayout from "../components/LandingLayout";
@@ -5,24 +6,34 @@ import LandingLayout from "../components/LandingLayout";
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>
-          Local PDF Tools - Merge, Optimize, Extract PDFs in your Browser
-        </title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta
-          name="description"
-          content="Local PDF uses Webassembly to edit your PDFs inside your Browser. Your files won't leave your System, they will not be sent to another server Currently, we support Merging PDFs, optimizing PDFs, and extracting Information like Images from PDF FilesMerge multiple PDFs into one. Get rid of redundant page resources like embedded fonts and images
-          and download the results with better PDF compression. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be sent to another server!"
-        />
-        <meta
-          name="keywords"
-          content="Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly, pdfcpu, optimize, locally, Extract, Images, Extract Images from PDF, Extract Content from PDF, Extract Information, Extract Meta"
-        />
-        <meta name="author" content="Julian Beck" />
-      </Head>
+      <NextSeo
+        title="Local PDF - Your Free PDF Editor in the Browser"
+        description="Edit PDF files in your browser with Local PDF. Merge, optimize, watermark, and more. No installation or registration needed, and your files never leave your system."
+        canonical="https://www.localpdf.com/"
+        openGraph={{
+          url: "https://www.localpdf.com/",
+          title: "Local PDF - Your Free PDF Editor in the Browser",
+          description:
+            "Edit PDF files in your browser with Local PDF. Merge, optimize, watermark, and more. No installation or registration needed, and your files never leave your system.",
+          type: "website",
+          images: [
+            {
+              url: "https://www.localpdf.com/og-image-01.png",
+              width: 1200,
+              height: 630,
+              alt: "Local PDF - Your Free PDF Editor in the Browser",
+              type: "image/jpeg",
+            },
+          ],
+          siteName: "Local PDF",
+        }}
+        twitter={{
+          handle: "@julianfbeck",
+          site: "@julianfbeck",
+          cardType: "summary_large_image",
+        }}
+      />
+
       <LandingLayout>
         <Hero
           title="Local PDF Tools"

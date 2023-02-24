@@ -9,6 +9,7 @@ import {
   Heading,
   Stack,
   Text,
+  Hide,
 } from "@chakra-ui/react";
 
 export default function Hero({
@@ -125,15 +126,17 @@ export default function Hero({
           </u>
         </Text>
       </Stack>
-      <Box  w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
-        <Image
-          src={image}
-          size="100%"
-          rounded="1rem"
-          shadow="2xl"
-          background="white"
-          alt="localpdf Logo with two PDF files side by side"
-        />
+      <Box w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 12, md: 0 }}>
+        <Hide below="md">
+          <Image
+            src={image}
+            size="100%"
+            rounded="1rem"
+            shadow="2xl"
+            background="white"
+            alt="localpdf Logo with two PDF files side by side"
+          />
+        </Hide>
       </Box>
     </Flex>
   );
