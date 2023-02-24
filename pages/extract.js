@@ -199,7 +199,7 @@ const Extract = () => {
           type: "website",
           images: [
             {
-              url: "https://www.localpdf.com/og-image-01.png",
+              url: "/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Local PDF allows you to extract information, such as images, from your PDF files directly in your browser. No need to upload your files to a third-party server.",
