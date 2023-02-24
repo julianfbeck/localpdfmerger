@@ -21,6 +21,7 @@ import DragDrop from "../components/DragDrop";
 import { promisifyAll } from "bluebird";
 import DonationModal from "../components/DonationModal";
 import { downloadFile, readFileAsync, runWasm } from "../components/Helper";
+import { NextSeo } from "next-seo";
 
 let fs;
 let Buffer;
@@ -67,7 +68,6 @@ const Merge = () => {
   };
 
   const mergeOneByOne = async () => {
-  
     if (files.length < 2) return;
     //merge first two files into merge.pdf
     const toastId = toast.loading(`Merging ${files[0].path} ${files[1].path} `);
@@ -188,21 +188,34 @@ const Merge = () => {
   };
   return (
     <>
-      <Head>
-        <title>Merge PDF Files - Combine multiple PDF Files into one</title>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta
-          name="description"
-          content="Merge multiple PDFs into one. Your files won't leave your System, Local PDF uses your Browser edit PDfs! Your files will not be send to another server!"
-        />
-        <meta
-          name="keywords"
-          content="Merge, PDF, Combine PDF, Local PDF, PDF Tools, Webassembly"
-        />
-        <meta name="author" content="Julian Beck" />
-      </Head>
+      <NextSeo
+        title="Merge PDF Files with Local PDF"
+        description="Local PDF allows you to merge multiple PDF files into one, directly in your browser. No need to upload your files to a third-party server."
+        canonical="https://www.localpdf.com/merge"
+        openGraph={{
+          url: "https://www.localpdf.com/merge",
+          title: "Merge PDF Files with Local PDF",
+          description:
+            "Local PDF allows you to merge multiple PDF files into one, directly in your browser. No need to upload your files to a third-party server.",
+          type: "website",
+          images: [
+            {
+              url: "https://www.localpdf.com/og-image-02.jpg",
+              width: 1200,
+              height: 630,
+              alt: "Merge PDF Files with Local PDF",
+              type: "image/jpeg",
+            },
+          ],
+          siteName: "Local PDF",
+        }}
+        twitter={{
+          handle: "@localpdf",
+          site: "@localpdf",
+          cardType: "summary_large_image",
+        }}
+      />
+
       <Flex width="full" height="full" align="center" justifyContent="center">
         <Box
           p={8}
