@@ -9,16 +9,16 @@ export default function Home() {
       <NextSeo
         title="Local PDF - Your Free PDF Editor in the Browser"
         description="Edit PDF files in your browser with Local PDF. Merge, optimize, watermark, and more. No installation or registration needed, and your files never leave your system."
-        canonical="https://www.localpdf.com/"
+        canonical="https://localpdf.tech/"
         openGraph={{
-          url: "https://www.localpdf.com/",
+          url: "https://localpdf.tech/",
           title: "Local PDF - Your Free PDF Editor in the Browser",
           description:
             "Edit PDF files in your browser with Local PDF. Merge, optimize, watermark, and more. No installation or registration needed, and your files never leave your system.",
           type: "website",
           images: [
             {
-              url: "/og-image-01.png",
+              url: "https://raw.githubusercontent.com/julianfbeck/localpdfmerger/main/public/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Local PDF - Your Free PDF Editor in the Browser",

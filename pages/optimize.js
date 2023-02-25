@@ -143,16 +143,16 @@ const Optimize = () => {
       <NextSeo
         title="Optimize PDF Files with Local PDF"
         description="Local PDF allows you to optimize your PDF files to reduce their file size, without compromising on quality. Try our PDF optimizer tool today."
-        canonical="https://www.localpdf.com/optimize"
+        canonical="https://localpdf.tech/optimize"
         openGraph={{
-          url: "https://www.localpdf.com/optimize",
+          url: "https://localpdf.tech/optimize",
           title: "Optimize PDF Files with Local PDF",
           description:
             "Local PDF allows you to optimize your PDF files to reduce their file size, without compromising on quality. Try our PDF optimizer tool today.",
           type: "website",
           images: [
             {
-              url: "/og-image-01.png",
+              url: "https://raw.githubusercontent.com/julianfbeck/localpdfmerger/main/public/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Optimize PDF Files with Local PDF",

@@ -148,16 +148,16 @@ const Watermark = () => {
       <NextSeo
         title="Add Watermarks to PDF Files with Local PDF"
         description="Local PDF allows you to easily add watermarks to your PDF files. Try our PDF watermark tool today and protect your documents with a custom watermark."
-        canonical="https://www.localpdf.com/watermark"
+        canonical="https://localpdf.tech/watermark"
         openGraph={{
-          url: "https://www.localpdf.com/watermark",
+          url: "https://localpdf.tech/watermark",
           title: "Add Watermarks to PDF Files with Local PDF",
           description:
             "Local PDF allows you to easily add watermarks to your PDF files. Try our PDF watermark tool today and protect your documents with a custom watermark.",
           type: "website",
           images: [
             {
-              url: "/og-image-01.png",
+              url: "https://raw.githubusercontent.com/julianfbeck/localpdfmerger/main/public/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Add Watermarks to PDF Files with Local PDF",

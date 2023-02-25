@@ -190,16 +190,16 @@ const Extract = () => {
       <NextSeo
         title="Extract PDF Information with Local PDF"
         description="Extract Images, Text, Meta Information, Fonts and Pages from your PDF files directly in your browser. No need to upload your files to a third-party server."
-        canonical="https://www.localpdf.com/extract"
+        canonical="https://localpdf.tech/extract"
         openGraph={{
-          url: "https://www.localpdf.com/extract",
+          url: "https://localpdf.tech/extract",
           title: "Extract PDF Information with Local PDF",
           description:
             "Extract Images, Text, Meta Information, Fonts and Pages from your PDF files directly in your browser. No need to upload your files to a third-party server.",
           type: "website",
           images: [
             {
-              url: "/og-image-01.png",
+              url: "https://raw.githubusercontent.com/julianfbeck/localpdfmerger/main/public/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Local PDF allows you to extract information, such as images, from your PDF files directly in your browser. No need to upload your files to a third-party server.",

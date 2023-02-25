@@ -192,16 +192,16 @@ const Merge = () => {
       <NextSeo
         title="Merge PDF Files with Local PDF"
         description="Local PDF allows you to merge multiple PDF files into one, directly in your browser. No need to upload your files to a third-party server."
-        canonical="https://www.localpdf.com/merge"
+        canonical="https://localpdf.tech/merge"
         openGraph={{
-          url: "https://www.localpdf.com/merge",
+          url: "https://localpdf.tech/merge",
           title: "Merge PDF Files with Local PDF",
           description:
             "Local PDF allows you to merge multiple PDF files into one, directly in your browser. No need to upload your files to a third-party server.",
           type: "website",
           images: [
             {
-              url: "/og-image-01.png",
+              url: "https://raw.githubusercontent.com/julianfbeck/localpdfmerger/main/public/og-image-01.png",
               width: 1200,
               height: 630,
               alt: "Merge PDF Files with Local PDF",
