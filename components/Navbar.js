@@ -258,7 +258,7 @@ const NAV_ITEMS = [
       },
       {
         label: "Optimize PDFs",
-        subLabel: "Optimze pdfs, reduce file size",
+        subLabel: "Optimize pdfs, reduce file size",
         href: "/optimize",
       },
 
@@ -269,7 +269,7 @@ const NAV_ITEMS = [
       },
       {
         label: "Add Watermark",
-        subLabel: "Add custom watermark to your pdf",
+        subLabel: "Add a custom watermark to your pdf",
         href: "/watermark",
       },
     ],
